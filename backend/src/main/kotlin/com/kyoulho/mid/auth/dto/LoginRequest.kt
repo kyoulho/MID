@@ -1,7 +1,7 @@
 package com.kyoulho.mid.auth.dto
 
 data class LoginRequest(
-    val username: String,
+    val email: String,
     val password: String
 )
 

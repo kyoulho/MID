@@ -1,74 +1,85 @@
 package com.kyoulho.mid.auth.svc
 
 import com.kyoulho.mid.auth.dto.UserPrincipal
+import com.kyoulho.mid.exception.MIDException
+import com.kyoulho.mid.logger.logger
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
+import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
-import java.security.Key
 import java.util.*
 import java.util.stream.Collectors
+import javax.crypto.SecretKey
 
 @Component
 class JwtTokenProvider(
     @Value("\${jwt.secret}") private val jwtSecret: String,
-    @Value("\${jwt.expirationMs}") private val jwtExpirationMs: Long
+    @Value("\${jwt.expirationHour}") private val expirationHour: Long
 ) {
+    val log = logger()
 
-    private val key: Key = Keys.hmacShaKeyFor(jwtSecret.toByteArray())
+    private lateinit var secretKey: SecretKey
+
+    @PostConstruct
+    fun init() {
+        val decodedKey = Base64.getDecoder().decode(jwtSecret)
+        secretKey = Keys.hmacShaKeyFor(decodedKey)
+    }
 
     fun generateToken(authentication: Authentication): String {
         val userPrincipal = authentication.principal as UserPrincipal
 
-        val roles = userPrincipal.authorities.stream()
+        val roles = userPrincipal.authorities
             .map { it.authority }
-            .collect(Collectors.joining(","))
 
         return Jwts.builder()
-            .setSubject(userPrincipal.id)
+            .setSubject(userPrincipal.username)
             .claim("roles", roles)
             .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + jwtExpirationMs))
-            .signWith(key, SignatureAlgorithm.HS512)
+            .setExpiration(Date(System.currentTimeMillis() + expirationHour * 3_600_000))
+            .signWith(secretKey, SignatureAlgorithm.HS512)
             .compact()
     }
 
-    fun getUserIdFromJWT(token: String): String {
+    fun getEmailFromJWT(token: String): String {
         return Jwts.parserBuilder()
-            .setSigningKey(key)
+            .setSigningKey(secretKey)
             .build()
             .parseClaimsJws(token)
             .body
             .subject
     }
 
-    fun getRolesFromJWT(token: String): List<String> {
+    fun getAuthoritiesFromJWT(token: String): List<GrantedAuthority> {
         val claims = Jwts.parserBuilder()
-            .setSigningKey(key)
+            .setSigningKey(secretKey)
             .build()
             .parseClaimsJws(token)
             .body
 
-        val roles = claims["roles"] as String
-        return roles.split(",")
+        val roles = claims["roles"] as List<*>
+        return roles.map { role -> SimpleGrantedAuthority("ROLE_$role") }
     }
 
     fun validateToken(authToken: String): Boolean {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken)
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(authToken)
             return true
         } catch (ex: SecurityException) {
-            println("Invalid JWT signature")
+            throw MIDException(HttpStatus.UNAUTHORIZED, "Invalid JWT signature")
         } catch (ex: MalformedJwtException) {
-            println("Invalid JWT token")
+            throw MIDException(HttpStatus.UNAUTHORIZED, "Invalid JWT token")
         } catch (ex: ExpiredJwtException) {
-            println("Expired JWT token")
+            throw MIDException(HttpStatus.UNAUTHORIZED, "Expired JWT token")
         } catch (ex: UnsupportedJwtException) {
-            println("Unsupported JWT token")
+            throw MIDException(HttpStatus.UNAUTHORIZED, "Unsupported JWT token")
         } catch (ex: IllegalArgumentException) {
-            println("JWT claims string is empty.")
+            throw MIDException(HttpStatus.BAD_REQUEST, "JWT claims string is empty.")
         }
-        return false
     }
 }

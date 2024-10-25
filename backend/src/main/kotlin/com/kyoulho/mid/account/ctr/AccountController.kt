@@ -4,8 +4,9 @@ import com.kyoulho.mid.account.dto.CreateAccountDTO
 import com.kyoulho.mid.account.dto.GetAccountDTO
 import com.kyoulho.mid.account.dto.UpdateAccountDTO
 import com.kyoulho.mid.account.svc.AccountService
-import com.kyoulho.mid.annotation.RequestUserId
+import com.kyoulho.mid.auth.annotation.RequestUserId
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -15,7 +16,6 @@ class AccountController(
     private val accountService: AccountService
 ) {
 
-    // 계좌 생성
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createAccount(

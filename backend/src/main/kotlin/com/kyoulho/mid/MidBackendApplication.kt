@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class MidBackendApplication
 
 fun main(args: Array<String>) {
-	runApplication<MidBackendApplication>(*args)
+    runApplication<MidBackendApplication>(*args)
 }
+

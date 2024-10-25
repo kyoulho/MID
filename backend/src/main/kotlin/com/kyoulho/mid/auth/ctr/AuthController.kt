@@ -21,7 +21,7 @@ class AuthController(
     fun authenticateUser(@RequestBody loginRequest: LoginRequest): JwtResponse {
         val authentication: Authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
-                loginRequest.username,
+                loginRequest.email,
                 loginRequest.password
             )
         )
@@ -32,7 +32,7 @@ class AuthController(
         return JwtResponse(jwt, authentication.name, roles)
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/admin")
     fun adminEndpoint(): ResponseEntity<String> {
         return ResponseEntity.ok("Admin Content")

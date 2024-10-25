@@ -1,22 +1,18 @@
 package com.kyoulho.mid.auth.svc
 
-import com.kyoulho.mid.auth.dto.UserPrincipal
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
 
 @Component
 class JwtAuthenticationFilter(
-    private val jwtTokenProvider: JwtTokenProvider,
-    private val userDetailsService: UserDetailsService
+    private val jwtTokenProvider: JwtTokenProvider
 ) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
@@ -25,17 +21,13 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val jwt = getJwtFromRequest(request)
+        val token = getJwtFromRequest(request)
 
-        if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
-            val userId = jwtTokenProvider.getUserIdFromJWT(jwt)
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            val email = jwtTokenProvider.getEmailFromJWT(token)
+            val authorities = jwtTokenProvider.getAuthoritiesFromJWT(token)
 
-            val userDetails = userDetailsService.loadUserByUsername(userId) as UserPrincipal
-            val authentication = UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.authorities
-            )
-            authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
-
+            val authentication = UsernamePasswordAuthenticationToken(email, null, authorities)
             SecurityContextHolder.getContext().authentication = authentication
         }
 

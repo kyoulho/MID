@@ -11,7 +11,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(21))
+		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 
@@ -46,6 +46,7 @@ dependencyManagement {
 }
 
 kotlin {
+	jvmToolchain(17)
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict")
 	}

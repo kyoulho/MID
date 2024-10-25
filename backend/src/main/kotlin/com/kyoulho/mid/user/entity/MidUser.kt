@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 data class MidUser(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String? = null,
+    val id: String = "",
 
     @Column(length = 50, nullable = false)
     val email: String,

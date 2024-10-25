@@ -1,4 +1,4 @@
-package com.kyoulho.mid.annotation
+package com.kyoulho.mid.auth.annotation
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 
