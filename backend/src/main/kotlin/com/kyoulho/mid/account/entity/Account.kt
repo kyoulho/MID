@@ -26,18 +26,18 @@ data class Account(
     @Column(nullable = false)
     var interestRate: String,
 
-    @Column(nullable = false)
-    var withdrawalLimit: String,
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "account_type_id")
     var accountType: AccountType,
 
+    @OneToMany(mappedBy = "account", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val fieldValues: List<AccountTypeFieldValue> = listOf(),
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id")
-    val user: MidUser
+    val user: MidUser,
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    val createdAt: LocalDateTime = LocalDateTime.now()
 )

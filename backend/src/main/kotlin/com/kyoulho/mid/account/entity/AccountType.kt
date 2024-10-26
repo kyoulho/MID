@@ -1,26 +1,20 @@
 package com.kyoulho.mid.account.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.CreationTimestamp
-import java.time.LocalDateTime
 
 @Entity
 data class AccountType(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String? = null,
+    val id: String = "",
 
-    @Column(length = 200, nullable = false)
-    val name: String,
+    @Column(nullable = false, unique = true, length = 200)
+    var name: String,
 
-    @Column(length = 200)
-    val description: String? = null,
+    @Column(length = 500)
+    var description: String? = null,
 
-    // 세금 해택
-    @Column(nullable = false)
-    val taxAdvantage: Boolean,
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: LocalDateTime = LocalDateTime.now()
-)
+    @OneToMany(mappedBy = "accountType", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val fields: MutableList<AccountTypeField> = mutableListOf()
+) {
+}

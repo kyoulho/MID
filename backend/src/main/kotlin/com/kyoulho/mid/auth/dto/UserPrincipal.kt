@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class UserPrincipal(
+    private val id: String,
     private val email: String,
     private val hashedPassword: String,
     private val authorities: Collection<GrantedAuthority>
@@ -29,6 +30,7 @@ class UserPrincipal(
         fun create(user: MidUser): UserPrincipal {
             val authorities = listOf(SimpleGrantedAuthority(user.role))
             return UserPrincipal(
+                user.id,
                 user.email,
                 user.hashedPassword,
                 authorities

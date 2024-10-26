@@ -22,8 +22,8 @@ class AccountService(
 
     // 계좌 생성
     @Transactional
-    fun createAccount(userId: String, createAccountDTO: CreateAccountDTO): GetAccountDTO =
-        with(createAccountDTO) {
+    fun createAccount(userId: String, dto: CreateAccountDTO): GetAccountDTO =
+        with(dto) {
             val accountType = accountTypeRepository.findById(accountTypeId)
                 .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "AccountType not found") }
 
@@ -56,22 +56,22 @@ class AccountService(
 
     // 계좌 업데이트
     @Transactional
-    fun updateAccount(userId: String, accountId: String, updateAccountDTO: UpdateAccountDTO): GetAccountDTO {
+    fun updateAccount(userId: String, accountId: String, dto: UpdateAccountDTO): GetAccountDTO {
         val account = accountRepository.findByIdAndUserId(accountId, userId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found") }
 
         account.apply {
-            if (accountType.id != updateAccountDTO.accountTypeId) {
-                accountTypeRepository.findById(updateAccountDTO.accountTypeId)
+            if (accountType.id != dto.accountTypeId) {
+                accountTypeRepository.findById(dto.accountTypeId)
                     .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "AccountType not found") }
                     .let { accountType = it }
             }
-            name = updateAccountDTO.name
-            description = updateAccountDTO.description
-            issuer = updateAccountDTO.issuer
-            number = updateAccountDTO.number
-            interestRate = updateAccountDTO.interestRate
-            withdrawalLimit = updateAccountDTO.withdrawalLimit
+            name = dto.name
+            description = dto.description
+            issuer = dto.issuer
+            number = dto.number
+            interestRate = dto.interestRate
+            withdrawalLimit = dto.withdrawalLimit
         }
 
         return accountRepository.save(account).toGetAccountDTO()
@@ -83,5 +83,9 @@ class AccountService(
         accountRepository.findByIdAndUserId(accountId, userId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found") }
             .let { accountRepository.delete(it) }
+    }
+
+    fun getAccountTypes() {
+        accountTypeRepository.findAll()
     }
 }

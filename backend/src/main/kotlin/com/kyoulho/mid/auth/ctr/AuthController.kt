@@ -1,5 +1,6 @@
 package com.kyoulho.mid.auth.ctr
 
+import com.kyoulho.mid.auth.annotation.RequestUserEmail
 import com.kyoulho.mid.auth.annotation.RequestUserId
 import com.kyoulho.mid.auth.dto.*
 import com.kyoulho.mid.auth.svc.JwtTokenProvider
@@ -35,7 +36,7 @@ class AuthController(
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/refresh")
-    fun refreshToken(@RequestUserId email: String): JwtResponse {
+    fun refreshToken(@RequestUserEmail email: String): JwtResponse {
         log.info("토큰 재발급 요청: {}", email)
         return JwtResponse(
             jwtTokenProvider.createAccessTokenFromEmail(email),
