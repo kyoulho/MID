@@ -1,8 +1,16 @@
 package com.kyoulho.mid.account.entity
 
+import com.kyoulho.mid.account.enum.AccountFieldEnum
+import com.kyoulho.mid.account.enum.AccountTypeEnum
 import com.kyoulho.mid.user.entity.MidUser
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.annotations.Type
+import org.hibernate.type.SqlTypes
+import java.math.BigDecimal
+import java.sql.SQLType
 import java.time.LocalDateTime
 
 @Entity
@@ -24,16 +32,17 @@ data class Account(
     var number: String,
 
     @Column(nullable = false)
-    var interestRate: String,
+    var interestRate: BigDecimal,
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "account_type_id")
-    var accountType: AccountType,
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    var accountType: AccountTypeEnum,
 
-    @OneToMany(mappedBy = "account", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val fieldValues: List<AccountTypeFieldValue> = listOf(),
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    val fields: MutableMap<AccountFieldEnum, String> = mutableMapOf(),
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     val user: MidUser,
 

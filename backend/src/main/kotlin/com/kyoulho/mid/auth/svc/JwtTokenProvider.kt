@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
@@ -32,7 +31,7 @@ class JwtTokenProvider(
         val roles = userPrincipal.authorities.map { it.authority }
 
         return Jwts.builder()
-            .setSubject(userPrincipal.username)
+            .setSubject(userPrincipal.id)
             .claim("roles", roles)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + expirationHours * 3_600_000))
@@ -42,32 +41,32 @@ class JwtTokenProvider(
 
     fun createRefreshToken(userPrincipal: UserPrincipal): String {
         return Jwts.builder()
-            .setSubject(userPrincipal.username)
+            .setSubject(userPrincipal.id)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + expirationHours * 6 * 3_600_000))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact()
     }
 
-    fun createRefreshTokenFromEmail(email: String): String {
+    fun createRefreshTokenFromUserId(id: String): String {
         return Jwts.builder()
-            .setSubject(email)
+            .setSubject(id)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + expirationHours * 6 * 3_600_000))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact()
     }
 
-    fun createAccessTokenFromEmail(email: String): String {
+    fun createAccessTokenFromUserId(id: String): String {
         return Jwts.builder()
-            .setSubject(email)
+            .setSubject(id)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + expirationHours * 3_600_000))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact()
     }
 
-    fun getEmailFromJWT(token: String): String {
+    fun getUserIdFromJWT(token: String): String {
         return try {
             Jwts.parserBuilder()
                 .setSigningKey(key)

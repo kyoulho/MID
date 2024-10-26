@@ -23,10 +23,10 @@ class InitUserRunner(
             // 유저 생성
             val user = MidUser(
                 email = email,
-                hashedPassword = passwordEncoder.encode("password"),
+                hashedPassword = passwordEncoder.encode("string"),
                 name = "Kyoulho",
                 phoneNumber = "01012345678",
-                role = "USER",
+                role = "ADMIN",
                 createdAt = LocalDateTime.now()
             )
 

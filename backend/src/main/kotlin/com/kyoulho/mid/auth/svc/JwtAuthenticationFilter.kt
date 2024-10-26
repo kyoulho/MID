@@ -22,9 +22,9 @@ class JwtAuthenticationFilter(
         filterChain: FilterChain
     ) {
         getJwtFromRequest(request)?.let { token ->
-            tokenProvider.getEmailFromJWT(token).let { email ->
+            tokenProvider.getUserIdFromJWT(token).let { id ->
                 val authorities = tokenProvider.getAuthoritiesFromJWT(token)
-                val authentication = UsernamePasswordAuthenticationToken(email, null, authorities)
+                val authentication = UsernamePasswordAuthenticationToken(id, null, authorities)
                 SecurityContextHolder.getContext().authentication = authentication
             }
         }

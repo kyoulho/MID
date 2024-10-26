@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class UserPrincipal(
-    private val id: String,
+    val id: String,
     private val email: String,
     private val hashedPassword: String,
     private val authorities: Collection<GrantedAuthority>

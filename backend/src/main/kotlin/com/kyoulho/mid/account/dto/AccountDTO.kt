@@ -1,17 +1,21 @@
 package com.kyoulho.mid.account.dto
 
 import com.kyoulho.mid.account.entity.Account
+import com.kyoulho.mid.account.enum.AccountFieldEnum
+import com.kyoulho.mid.account.enum.AccountTypeEnum
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 
 data class CreateAccountDTO(
-    val accountTypeId: String,
     val name: String,
     val description: String?,
     val issuer: String,
     val number: String,
-    val interestRate: String,
-    val withdrawalLimit: String
+    val interestRate: BigDecimal,
+    val accountType: AccountTypeEnum,
+    val fields: Map<AccountFieldEnum, String>,
+    val createdAt: LocalDateTime
 )
 
 typealias UpdateAccountDTO = CreateAccountDTO
@@ -19,26 +23,27 @@ typealias UpdateAccountDTO = CreateAccountDTO
 
 data class GetAccountDTO(
     val id: String,
-    val type: String,
     val name: String,
     val description: String?,
     val issuer: String,
     val number: String,
-    val interestRate: String,
-    val withdrawalLimit: String,
-    val createdAt: LocalDateTime,
+    val interestRate: BigDecimal,
+    val accountType: AccountTypeEnum,
+    val fields: Map<AccountFieldEnum, String>,
+    val createdAt: LocalDateTime
 )
 
-fun Account.toGetAccountDTO(): GetAccountDTO {
+fun Account.toDTO(): GetAccountDTO {
     return GetAccountDTO(
         id = this.id!!,
-        type = this.accountType.name,
+        accountType = this.accountType,
         name = this.name,
         description = this.description,
         issuer = this.issuer,
         number = this.number,
         interestRate = this.interestRate,
-        withdrawalLimit = this.withdrawalLimit,
-        createdAt = this.createdAt
+        createdAt = this.createdAt,
+        fields = this.fields,
     )
 }
+
