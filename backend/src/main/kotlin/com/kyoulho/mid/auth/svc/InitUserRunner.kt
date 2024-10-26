@@ -1,5 +1,6 @@
 package com.kyoulho.mid.auth.svc
 
+import com.kyoulho.mid.logger.logger
 import com.kyoulho.mid.user.entity.MidUser
 import com.kyoulho.mid.user.repo.UserRepository
 import org.springframework.boot.CommandLineRunner
@@ -12,6 +13,7 @@ class InitUserRunner(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder // PasswordEncoder 주입
 ) : CommandLineRunner {
+    val log = logger()
 
     override fun run(vararg args: String?) {
         val email = "kyoulho@gmail.com"
@@ -30,9 +32,9 @@ class InitUserRunner(
 
             // 유저 저장
             userRepository.save(user)
-            println("유저가 성공적으로 생성되었습니다: $email")
+            log.info("유저가 성공적으로 생성되었습니다: $email")
         } else {
-            println("이미 존재하는 유저입니다: $email")
+            log.info("이미 존재하는 유저입니다: $email")
         }
     }
 }

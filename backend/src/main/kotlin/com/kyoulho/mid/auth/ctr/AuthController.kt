@@ -1,40 +1,45 @@
 package com.kyoulho.mid.auth.ctr
 
+import com.kyoulho.mid.auth.annotation.RequestUserId
+import com.kyoulho.mid.auth.dto.*
 import com.kyoulho.mid.auth.svc.JwtTokenProvider
-import com.kyoulho.mid.auth.dto.JwtResponse
-import com.kyoulho.mid.auth.dto.LoginRequest
-import org.springframework.http.ResponseEntity
+import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
-    private val authenticationManager: AuthenticationManager,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val authenticationManager: AuthenticationManager
 ) {
 
+    private val log = LoggerFactory.getLogger(AuthController::class.java)
+
     @PostMapping("/login")
-    fun authenticateUser(@RequestBody loginRequest: LoginRequest): JwtResponse {
-        val authentication: Authentication = authenticationManager.authenticate(
+    fun login(@RequestBody loginRequest: LoginRequest): JwtResponse {
+        log.info("로그인 요청: ", loginRequest.email)
+        val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 loginRequest.email,
                 loginRequest.password
             )
         )
-
-        val jwt = jwtTokenProvider.generateToken(authentication)
-        val roles = authentication.authorities.map { it.authority }
-
-        return JwtResponse(jwt, authentication.name, roles)
+        return JwtResponse(
+            jwtTokenProvider.createAccessToken(authentication.principal as UserPrincipal),
+            jwtTokenProvider.createRefreshToken(authentication.principal as UserPrincipal),
+        )
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/admin")
-    fun adminEndpoint(): ResponseEntity<String> {
-        return ResponseEntity.ok("Admin Content")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/refresh")
+    fun refreshToken(@RequestUserId email: String): JwtResponse {
+        log.info("토큰 재발급 요청: {}", email)
+        return JwtResponse(
+            jwtTokenProvider.createAccessTokenFromEmail(email),
+            jwtTokenProvider.createRefreshTokenFromEmail(email),
+        )
     }
 }

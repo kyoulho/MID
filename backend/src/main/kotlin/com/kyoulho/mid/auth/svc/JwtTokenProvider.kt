@@ -13,51 +13,76 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import java.util.*
-import java.util.stream.Collectors
 import javax.crypto.SecretKey
 
 @Component
 class JwtTokenProvider(
-    @Value("\${jwt.secret}") private val jwtSecret: String,
-    @Value("\${jwt.expirationHour}") private val expirationHour: Long
+    @Value("\${jwt.secret}") private val secret: String,
+    @Value("\${jwt.expirationHour}") private val expirationHours: Long
 ) {
-    val log = logger()
-
-    private lateinit var secretKey: SecretKey
+    private val log = logger()
+    private lateinit var key: SecretKey
 
     @PostConstruct
     fun init() {
-        val decodedKey = Base64.getDecoder().decode(jwtSecret)
-        secretKey = Keys.hmacShaKeyFor(decodedKey)
+        key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret))
     }
 
-    fun generateToken(authentication: Authentication): String {
-        val userPrincipal = authentication.principal as UserPrincipal
-
-        val roles = userPrincipal.authorities
-            .map { it.authority }
+    fun createAccessToken(userPrincipal: UserPrincipal): String {
+        val roles = userPrincipal.authorities.map { it.authority }
 
         return Jwts.builder()
             .setSubject(userPrincipal.username)
             .claim("roles", roles)
             .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + expirationHour * 3_600_000))
-            .signWith(secretKey, SignatureAlgorithm.HS512)
+            .setExpiration(Date(System.currentTimeMillis() + expirationHours * 3_600_000))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact()
+    }
+
+    fun createRefreshToken(userPrincipal: UserPrincipal): String {
+        return Jwts.builder()
+            .setSubject(userPrincipal.username)
+            .setIssuedAt(Date())
+            .setExpiration(Date(System.currentTimeMillis() + expirationHours * 6 * 3_600_000))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact()
+    }
+
+    fun createRefreshTokenFromEmail(email: String): String {
+        return Jwts.builder()
+            .setSubject(email)
+            .setIssuedAt(Date())
+            .setExpiration(Date(System.currentTimeMillis() + expirationHours * 6 * 3_600_000))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact()
+    }
+
+    fun createAccessTokenFromEmail(email: String): String {
+        return Jwts.builder()
+            .setSubject(email)
+            .setIssuedAt(Date())
+            .setExpiration(Date(System.currentTimeMillis() + expirationHours * 3_600_000))
+            .signWith(key, SignatureAlgorithm.HS512)
             .compact()
     }
 
     fun getEmailFromJWT(token: String): String {
-        return Jwts.parserBuilder()
-            .setSigningKey(secretKey)
-            .build()
-            .parseClaimsJws(token)
-            .body
-            .subject
+        return try {
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .body
+                .subject
+        } catch (e: JwtException) {
+            throw MIDException(HttpStatus.UNAUTHORIZED, "Failed to extract email from JWT", e)
+        }
     }
 
     fun getAuthoritiesFromJWT(token: String): List<GrantedAuthority> {
         val claims = Jwts.parserBuilder()
-            .setSigningKey(secretKey)
+            .setSigningKey(key)
             .build()
             .parseClaimsJws(token)
             .body
@@ -66,20 +91,5 @@ class JwtTokenProvider(
         return roles.map { role -> SimpleGrantedAuthority("ROLE_$role") }
     }
 
-    fun validateToken(authToken: String): Boolean {
-        try {
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(authToken)
-            return true
-        } catch (ex: SecurityException) {
-            throw MIDException(HttpStatus.UNAUTHORIZED, "Invalid JWT signature")
-        } catch (ex: MalformedJwtException) {
-            throw MIDException(HttpStatus.UNAUTHORIZED, "Invalid JWT token")
-        } catch (ex: ExpiredJwtException) {
-            throw MIDException(HttpStatus.UNAUTHORIZED, "Expired JWT token")
-        } catch (ex: UnsupportedJwtException) {
-            throw MIDException(HttpStatus.UNAUTHORIZED, "Unsupported JWT token")
-        } catch (ex: IllegalArgumentException) {
-            throw MIDException(HttpStatus.BAD_REQUEST, "JWT claims string is empty.")
-        }
-    }
+
 }

@@ -21,41 +21,39 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val userDetailsService: UserDetailsService
+    private val userDetailsService: UserDetailsService,
+    private val permitAllUrls: PermitAllUrlsProperties,
 ) {
-
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http
-            .csrf { it.disable() }  // Disable CSRF
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }  // Stateless session management
-            .authorizeHttpRequests { authz ->
-                authz
-                    .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers("/swagger-ui/**").permitAll()
-                    .requestMatchers("/v3/api-docs/**").permitAll()
-                    .requestMatchers("/api/auth/login").permitAll()  // Allow unauthenticated access to /api/auth/login
-                    .anyRequest().authenticated()  // All other requests require authentication
-            }
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .userDetailsService(userDetailsService)
 
-        http.exceptionHandling {
-            it.authenticationEntryPoint { _, response, authException ->
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.message)
+        http
+            .csrf { it.disable() }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .authorizeHttpRequests { authz ->
+                permitAllUrls.permitAll.forEach { pattern ->
+                    authz.requestMatchers(pattern).permitAll()
+                }
+                authz.anyRequest().authenticated()
             }
-        }
+            .userDetailsService(userDetailsService)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .exceptionHandling {
+                it.authenticationEntryPoint { _, response, authException ->
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.message)
+                }
+            }
 
         return http.build()
     }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()  // Password encoder
+        return BCryptPasswordEncoder()
     }
 
     @Bean
     fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager {
-        return authenticationConfiguration.authenticationManager  // AuthenticationManager bean
+        return authenticationConfiguration.authenticationManager
     }
 }

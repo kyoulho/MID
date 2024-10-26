@@ -4,6 +4,7 @@ import com.kyoulho.mid.logger.logger
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authorization.AuthorizationDeniedException
+import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
@@ -25,20 +26,20 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, ex.status)
     }
 
-    @ExceptionHandler(AuthorizationDeniedException::class)
-    fun handleAuthorizationDeniedException(
-        ex: AuthorizationDeniedException,
+    @ExceptionHandler(AuthenticationException::class)
+    fun handleAuthenticationException(
+        ex: AuthenticationException,
         request: WebRequest
     ): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
             timestamp = System.currentTimeMillis(),
-            status = 403,
-            error = ex.localizedMessage,
+            status = HttpStatus.UNAUTHORIZED.value(),
+            error = HttpStatus.UNAUTHORIZED.reasonPhrase,
             message = ex.localizedMessage,
             path = extractPathFromWebRequest(request)
         )
-        log.error(ex.message, ex)
-        return ResponseEntity(errorResponse, HttpStatus.FORBIDDEN)
+        log.error(ex.message)
+        return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
     }
 
     @ExceptionHandler(Exception::class)

@@ -15,7 +15,7 @@ import java.util.*
 class AccountController(
     private val accountService: AccountService
 ) {
-
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createAccount(
@@ -25,7 +25,7 @@ class AccountController(
         return accountService.createAccount(userId, createAccountDTO)
     }
 
-    // 모든 계좌 조회
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     fun getAccounts(
         @RequestUserId userId: String
@@ -33,7 +33,7 @@ class AccountController(
         return accountService.getAccounts(userId)
     }
 
-    // ID로 계좌 조회
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     fun getAccountById(
         @RequestUserId userId: String,
@@ -42,7 +42,7 @@ class AccountController(
         return accountService.getAccountById(userId, id)
     }
 
-    // 계좌 업데이트
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{id}")
     fun updateAccount(
         @RequestUserId userId: String,
@@ -52,7 +52,7 @@ class AccountController(
         return accountService.updateAccount(userId, id, updateAccountDTO)
     }
 
-    // 계좌 삭제
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAccount(

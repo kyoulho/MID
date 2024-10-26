@@ -12,7 +12,7 @@ import java.io.IOException
 
 @Component
 class JwtAuthenticationFilter(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val tokenProvider: JwtTokenProvider
 ) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
@@ -21,23 +21,18 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token = getJwtFromRequest(request)
-
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            val email = jwtTokenProvider.getEmailFromJWT(token)
-            val authorities = jwtTokenProvider.getAuthoritiesFromJWT(token)
-
-            val authentication = UsernamePasswordAuthenticationToken(email, null, authorities)
-            SecurityContextHolder.getContext().authentication = authentication
+        getJwtFromRequest(request)?.let { token ->
+            tokenProvider.getEmailFromJWT(token).let { email ->
+                val authorities = tokenProvider.getAuthoritiesFromJWT(token)
+                val authentication = UsernamePasswordAuthenticationToken(email, null, authorities)
+                SecurityContextHolder.getContext().authentication = authentication
+            }
         }
 
         filterChain.doFilter(request, response)
     }
 
-    private fun getJwtFromRequest(request: HttpServletRequest): String? {
-        val bearerToken = request.getHeader("Authorization")
-        return if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            bearerToken.substring(7)
-        } else null
-    }
+    private fun getJwtFromRequest(request: HttpServletRequest): String? =
+        request.getHeader("Authorization")?.takeIf { it.startsWith("Bearer ") }
+            ?.substring(7)
 }

@@ -6,7 +6,10 @@ data class LoginRequest(
 )
 
 data class JwtResponse(
-    val token: String,
-    val username: String,
-    val roles: List<String>,
+    val accessToken: String,
+    val refreshToken : String
+)
+
+data class RefreshRequest(
+    val refreshToken: String
 )

@@ -15,7 +15,7 @@ class CustomUserDetailsService(
 
     override fun loadUserByUsername(email: String): UserDetails {
         val user = userRepository.findByEmail(email)
-            ?: throw MIDException(HttpStatus.UNAUTHORIZED, "MidUser not found with username: $email")
+            ?: throw MIDException(HttpStatus.UNAUTHORIZED, "잘못된 이메일입니다. email: $email")
 
         return UserPrincipal.create(user)
     }
