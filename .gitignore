@@ -41,3 +41,6 @@ out/
 
 ### Database Data ###
 /database/postgres_data/
+
+### Next ###
+frontend/package-lock.json
