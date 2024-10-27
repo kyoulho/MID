@@ -1,8 +1,8 @@
 package com.kyoulho.mid.account.dto
 
 import com.kyoulho.mid.account.entity.Account
-import com.kyoulho.mid.account.enum.AccountFieldEnum
-import com.kyoulho.mid.account.enum.AccountTypeEnum
+import com.kyoulho.mid.const.AccountFieldEnum
+import com.kyoulho.mid.const.AccountTypeEnum
 import java.math.BigDecimal
 import java.time.LocalDateTime
 

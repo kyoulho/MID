@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 @Component
 class InitUserRunner(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder // PasswordEncoder 주입
+    private val passwordEncoder: PasswordEncoder
 ) : CommandLineRunner {
     val log = logger()
 

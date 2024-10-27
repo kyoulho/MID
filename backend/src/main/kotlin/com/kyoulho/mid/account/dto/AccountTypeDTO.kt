@@ -1,6 +1,6 @@
 package com.kyoulho.mid.account.dto
 
-import com.kyoulho.mid.account.enum.AccountTypeEnum
+import com.kyoulho.mid.const.AccountTypeEnum
 
 data class AccountTypeDTO(
     val type: String,

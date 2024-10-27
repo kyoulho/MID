@@ -1,4 +1,4 @@
-package com.kyoulho.mid.portfolio
+package com.kyoulho.mid.portfolio.entity
 
 import com.kyoulho.mid.account.entity.Account
 import jakarta.persistence.*
@@ -8,7 +8,7 @@ import java.util.*
 data class AssetDividendRecord(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String? = null,
+    val id: String = "",
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "portfolio_asset_id", nullable = false)

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "security.permit-all",
+      "type": "java.util.ArrayList",
+      "description": "Description for security.permit-all."
+  }
+] }

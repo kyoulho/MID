@@ -21,47 +21,51 @@ class AccountService(
     // 계좌 생성
     @Transactional
     fun createAccount(userId: String, dto: CreateAccountDTO): GetAccountDTO {
-
         val user = userRepository.findById(userId)
             .orElseThrow { ResponseStatusException(HttpStatus.FORBIDDEN, "존재하지 않는 유저의 요청") }
-
-        val account = Account(
+        return Account(
             name = dto.name,
             description = dto.description,
             issuer = dto.issuer,
             number = dto.number,
             interestRate = dto.interestRate,
             accountType = dto.accountType,
+            fields = dto.fields.toMutableMap(),
             user = user,
-        )
-        TODO()
+        ).apply {
+            accountRepository.save(this)
+        }.toDTO()
     }
 
-    // 모든 계좌 조회
     fun getAccounts(userId: String): List<GetAccountDTO> =
         accountRepository.findByUserId(userId).map { it.toDTO() }
 
-    // 특정 계좌 조회
     fun getAccountById(userId: String, accountId: String): GetAccountDTO =
         accountRepository.findByIdAndUserId(accountId, userId)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found") }
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "계좌를 찾을 수 없습니다.") }
             .toDTO()
 
     // 계좌 업데이트
     @Transactional
     fun updateAccount(userId: String, accountId: String, dto: UpdateAccountDTO): GetAccountDTO {
-        val account = accountRepository.findByIdAndUserId(accountId, userId)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found") }
-
-        TODO()
-
+        return accountRepository.findByIdAndUserId(accountId, userId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "계좌를 찾을 수 없습니다.") }
+            .apply {
+                name = dto.name
+                description = dto.description
+                issuer = dto.issuer
+                number = dto.number
+                interestRate = dto.interestRate
+                accountType = dto.accountType
+                fields = dto.fields.toMutableMap()
+            }.toDTO()
     }
 
     // 계좌 삭제
     @Transactional
     fun deleteAccount(userId: String, accountId: String) {
         accountRepository.findByIdAndUserId(accountId, userId)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found") }
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "계좌를 찾을 수 없습니다.") }
             .let { accountRepository.delete(it) }
     }
 }

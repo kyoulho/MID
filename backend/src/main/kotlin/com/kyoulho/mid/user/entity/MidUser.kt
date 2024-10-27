@@ -1,7 +1,7 @@
 package com.kyoulho.mid.user.entity
 
 import com.kyoulho.mid.account.entity.Account
-import com.kyoulho.mid.portfolio.Portfolio
+import com.kyoulho.mid.portfolio.entity.Portfolio
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime

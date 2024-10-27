@@ -1,4 +1,4 @@
-package com.kyoulho.mid.account.enum
+package com.kyoulho.mid.const
 
 enum class AccountTypeEnum(
     val fields: List<AccountFieldEnum>,
@@ -18,3 +18,10 @@ enum class FieldType {
     DATE,
     TEXT
 }
+
+enum class TradingType {
+    BUY,
+    SELL
+}
+
+typealias Ticker = String

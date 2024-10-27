@@ -1,19 +1,20 @@
-package com.kyoulho.mid.portfolio
+package com.kyoulho.mid.portfolio.entity
 
+import com.kyoulho.mid.const.Ticker
 import jakarta.persistence.*
 
 @Entity
 data class PortfolioAsset(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String? = null,
+    val id: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "portfolio_id", nullable = false)
     val portfolio: Portfolio,
 
     @Column(nullable = false)
-    val intendedAsset: String,
+    val intendedAsset: Ticker,
 
     @Column(nullable = false)
     val targetRatio: Double,
