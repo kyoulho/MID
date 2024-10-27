@@ -16,7 +16,7 @@ const config = {
     },
     plugins: [daisyui],
     daisyui: {
-        themes: ["light"], // 기본 테마를 'light'로 설정
+        themes: ["light"],
     },
 };
 
