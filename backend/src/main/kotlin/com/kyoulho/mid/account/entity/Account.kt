@@ -1,7 +1,7 @@
 package com.kyoulho.mid.account.entity
 
-import com.kyoulho.mid.const.AccountFieldEnum
-import com.kyoulho.mid.const.AccountTypeEnum
+import com.kyoulho.mid.const.AccountField
+import com.kyoulho.mid.const.AccountType
 import com.kyoulho.mid.user.entity.MidUser
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
@@ -33,11 +33,11 @@ data class Account(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    var accountType: AccountTypeEnum,
+    var accountType: AccountType,
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    var fields: MutableMap<AccountFieldEnum, String> = mutableMapOf(),
+    var fields: MutableMap<AccountField, String> = mutableMapOf(),
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")

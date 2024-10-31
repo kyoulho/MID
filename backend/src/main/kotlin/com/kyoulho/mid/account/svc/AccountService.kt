@@ -13,13 +13,12 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 
 @Service
+@Transactional
 class AccountService(
     private val accountRepository: AccountRepository,
     private val userRepository: UserRepository,
 ) {
 
-    // 계좌 생성
-    @Transactional
     fun createAccount(userId: String, dto: CreateAccountDTO): GetAccountDTO {
         val user = userRepository.findById(userId)
             .orElseThrow { ResponseStatusException(HttpStatus.FORBIDDEN, "존재하지 않는 유저의 요청") }
@@ -37,16 +36,16 @@ class AccountService(
         }.toDTO()
     }
 
+    @Transactional(readOnly = true)
     fun getAccounts(userId: String): List<GetAccountDTO> =
         accountRepository.findByUserId(userId).map { it.toDTO() }
 
+    @Transactional(readOnly = true)
     fun getAccountById(userId: String, accountId: String): GetAccountDTO =
         accountRepository.findByIdAndUserId(accountId, userId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "계좌를 찾을 수 없습니다.") }
             .toDTO()
 
-    // 계좌 업데이트
-    @Transactional
     fun updateAccount(userId: String, accountId: String, dto: UpdateAccountDTO): GetAccountDTO {
         return accountRepository.findByIdAndUserId(accountId, userId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "계좌를 찾을 수 없습니다.") }
@@ -61,8 +60,6 @@ class AccountService(
             }.toDTO()
     }
 
-    // 계좌 삭제
-    @Transactional
     fun deleteAccount(userId: String, accountId: String) {
         accountRepository.findByIdAndUserId(accountId, userId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "계좌를 찾을 수 없습니다.") }

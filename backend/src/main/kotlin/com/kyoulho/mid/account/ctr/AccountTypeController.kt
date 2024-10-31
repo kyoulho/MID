@@ -2,7 +2,7 @@ package com.kyoulho.mid.account.ctr
 
 import com.kyoulho.mid.account.dto.AccountTypeDTO
 import com.kyoulho.mid.account.dto.toDTO
-import com.kyoulho.mid.const.AccountTypeEnum
+import com.kyoulho.mid.const.AccountType
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -11,7 +11,7 @@ class AccountTypeController {
 
     @GetMapping
     fun getAccountTypes(): List<AccountTypeDTO> {
-        return AccountTypeEnum.values().map { it.toDTO() }
+        return AccountType.values().map { it.toDTO() }
     }
 
 }

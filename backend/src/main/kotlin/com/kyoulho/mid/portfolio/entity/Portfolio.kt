@@ -1,6 +1,6 @@
 package com.kyoulho.mid.portfolio.entity
 
-import com.kyoulho.mid.strategy.Strategy
+import com.kyoulho.mid.strategy.entity.Strategy
 import com.kyoulho.mid.user.entity.MidUser
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp

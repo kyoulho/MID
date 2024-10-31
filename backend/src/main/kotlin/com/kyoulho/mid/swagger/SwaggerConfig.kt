@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class SwaggerConfig {
 
-    private val SECURITY_SCHEME_NAME = "BearerAuth"
-
     @Bean
     fun customOpenAPI(): OpenAPI {
         return OpenAPI()
@@ -23,12 +21,12 @@ class SwaggerConfig {
                     .description("API for my application")
             )
             .addSecurityItem(
-                SecurityRequirement().addList(SECURITY_SCHEME_NAME)
+                SecurityRequirement().addList("BearerAuth")
             )
             .components(
                 Components()
                     .addSecuritySchemes(
-                        SECURITY_SCHEME_NAME,
+                        "BearerAuth",
                         SecurityScheme()
                             .name("Authorization")
                             .type(SecurityScheme.Type.HTTP)
@@ -37,5 +35,5 @@ class SwaggerConfig {
                     )
             )
     }
-    
+
 }

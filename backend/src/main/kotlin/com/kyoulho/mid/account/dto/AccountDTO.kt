@@ -1,8 +1,8 @@
 package com.kyoulho.mid.account.dto
 
 import com.kyoulho.mid.account.entity.Account
-import com.kyoulho.mid.const.AccountFieldEnum
-import com.kyoulho.mid.const.AccountTypeEnum
+import com.kyoulho.mid.const.AccountField
+import com.kyoulho.mid.const.AccountType
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -13,8 +13,8 @@ data class CreateAccountDTO(
     val issuer: String,
     val number: String,
     val interestRate: BigDecimal,
-    val accountType: AccountTypeEnum,
-    val fields: Map<AccountFieldEnum, String>,
+    val accountType: AccountType,
+    val fields: Map<AccountField, String>,
     val createdAt: LocalDateTime
 )
 
@@ -28,14 +28,14 @@ data class GetAccountDTO(
     val issuer: String,
     val number: String,
     val interestRate: BigDecimal,
-    val accountType: AccountTypeEnum,
-    val fields: Map<AccountFieldEnum, String>,
+    val accountType: AccountType,
+    val fields: Map<AccountField, String>,
     val createdAt: LocalDateTime
 )
 
 fun Account.toDTO(): GetAccountDTO {
     return GetAccountDTO(
-        id = this.id!!,
+        id = this.id,
         accountType = this.accountType,
         name = this.name,
         description = this.description,
