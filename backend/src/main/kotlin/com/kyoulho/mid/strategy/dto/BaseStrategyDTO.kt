@@ -2,41 +2,30 @@ package com.kyoulho.mid.strategy.dto
 
 import com.kyoulho.mid.const.RebalanceFrequency
 import com.kyoulho.mid.const.StrategyType
-import com.kyoulho.mid.strategy.entity.Strategy
+import com.kyoulho.mid.strategy.AggressiveAsset
+import com.kyoulho.mid.strategy.CanaryAsset
+import com.kyoulho.mid.strategy.DefensiveAsset
+import com.kyoulho.mid.strategy.InvestmentStrategy
 
-
-data class CreateStrategyDTO(
-    var name: String,
-    var type: StrategyType,
-    var description: String? = null,
-    var script: String? = null,
-    var rebalanceFrequency: RebalanceFrequency
-)
 
 data class GetStrategyDTO(
-    var id: String,
-    var name: String,
-    var type: StrategyType,
-    var description: String? = null,
-    var script: String? = null,
-    var rebalanceFrequency: RebalanceFrequency
+    val alias: String,
+    val name: String,
+    val type: StrategyType,
+    val rebalanceFrequency: RebalanceFrequency,
+    val aggressiveAssets: Set<AggressiveAsset>,
+    val defensiveAssets: Set<DefensiveAsset>,
+    val canaryAssets: Set<CanaryAsset>,
 )
 
-data class UpdateStrategyDTO(
-    var name: String,
-    var type: StrategyType,
-    var description: String? = null,
-    var script: String? = null,
-    var rebalanceFrequency: RebalanceFrequency,
-)
-
-fun Strategy.toDTO(): GetStrategyDTO {
+fun InvestmentStrategy.toDTO(): GetStrategyDTO {
     return GetStrategyDTO(
-        id = this.id,
+        alias = this.alias,
         name = this.name,
         type = this.type,
-        description = this.description,
-        script = this.script,
-        rebalanceFrequency = this.rebalanceFrequency
+        rebalanceFrequency = this.rebalanceFrequency,
+        aggressiveAssets = this.aggressiveAssets,
+        defensiveAssets = this.defensiveAssets,
+        canaryAssets = this.canaryAssets
     )
 }

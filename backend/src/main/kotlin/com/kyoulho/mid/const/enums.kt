@@ -8,9 +8,6 @@ enum class AccountType(val fields: List<AccountField>) {
 // 계좌의 동적 필드
 enum class AccountField(val dataType: AccountFieldDataType) {
     OPEN_DATE(AccountFieldDataType.DATE),
-    HOLDER_NAME(AccountFieldDataType.TEXT),
-    OVERDRAFT_LIMIT(AccountFieldDataType.NUMBER),
-    CREDIT_LIMIT(AccountFieldDataType.NUMBER)
 }
 
 // 계좌의 동적 필드 타입
@@ -39,7 +36,7 @@ enum class RebalanceFrequency {
 enum class StrategyType(
     fullName: String
 ) {
-    SAA("Static Asset Allocation"),
-    DAA("Dynamic Asset Allocation"),
+    SAA("Static StrategyAsset Allocation"),
+    DAA("Dynamic StrategyAsset Allocation"),
     MOM("Momentum")
 }
