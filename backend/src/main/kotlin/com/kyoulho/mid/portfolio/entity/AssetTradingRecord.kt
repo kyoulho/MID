@@ -1,7 +1,7 @@
 package com.kyoulho.mid.portfolio.entity
 
 import com.kyoulho.mid.account.entity.Account
-import com.kyoulho.mid.portfolio.const.TradingType
+import com.kyoulho.mid.const.TradingType
 import jakarta.persistence.*
 import java.util.*
 

@@ -1,13 +1,9 @@
-package com.kyoulho.mid.strategy
+package com.kyoulho.mid.strategy.todo
 
 import com.kyoulho.mid.const.RebalanceFrequency
 import com.kyoulho.mid.const.StrategyType
-import com.kyoulho.mid.strategy.svc.Calculations
-import com.kyoulho.mid.strategy.svc.IPriceDataProvider
-import org.springframework.stereotype.Component
 import java.time.LocalDate
 
-@Component
 class ADM(
     dataProvider: IPriceDataProvider
 ) : AbstractStrategy(dataProvider) {

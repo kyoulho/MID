@@ -1,12 +1,10 @@
-package com.kyoulho.mid.strategy.svc
+package com.kyoulho.mid.strategy.todo
 
-import org.springframework.stereotype.Service
 import yahoofinance.YahooFinance
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 
-@Service
 class YahooDataProvider : IPriceDataProvider {
 
     override fun getHistoricalPrices(ticker: String, startDate: LocalDate, endDate: LocalDate): Map<LocalDate, Long> {
@@ -24,5 +22,9 @@ class YahooDataProvider : IPriceDataProvider {
         }
 
         return prices
+    }
+
+    override fun fetchUSUnemploymentRate(startDate: LocalDate, endDate: LocalDate): Map<LocalDate, Double> {
+        TODO("Not yet implemented")
     }
 }

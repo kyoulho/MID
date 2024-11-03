@@ -1,5 +1,6 @@
 package com.kyoulho.mid.account.dto
 
+import com.kyoulho.mid.const.AccountFieldDataType
 import com.kyoulho.mid.const.AccountType
 
 data class AccountTypeDTO(
@@ -9,13 +10,13 @@ data class AccountTypeDTO(
 
 data class AccountFieldDTO(
     val name: String,
-    val type: String
+    val type: AccountFieldDataType
 )
 
 fun AccountType.toDTO(): AccountTypeDTO {
     return AccountTypeDTO(
         type = this.name,
         fields = this.fields
-            .map { AccountFieldDTO(it.name, it.accountFieldDataType.name) }
+            .map { AccountFieldDTO(it.name, it.dataType) }
     )
 }

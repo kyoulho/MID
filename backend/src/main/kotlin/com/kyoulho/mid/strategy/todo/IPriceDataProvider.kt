@@ -1,4 +1,4 @@
-package com.kyoulho.mid.strategy.svc
+package com.kyoulho.mid.strategy.todo
 
 import com.kyoulho.mid.const.Ticker
 import java.time.LocalDate

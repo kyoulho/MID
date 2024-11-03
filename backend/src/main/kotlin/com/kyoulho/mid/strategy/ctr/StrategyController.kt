@@ -1,6 +1,8 @@
 package com.kyoulho.mid.strategy.ctr
 
+import com.kyoulho.mid.strategy.dto.CreateStrategyDTO
 import com.kyoulho.mid.strategy.dto.GetStrategyDTO
+import com.kyoulho.mid.strategy.dto.UpdateStrategyDTO
 import com.kyoulho.mid.strategy.svc.StrategyService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -30,11 +32,33 @@ class StrategyController(
         return strategyService.getStrategy(id)
     }
 
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    fun createStrategy(@RequestBody strategyDTO: CreateStrategyDTO): GetStrategyDTO {
+        return strategyService.createStrategy(strategyDTO)
+    }
 
-    @GetMapping("/{alias}/exec")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    fun updateStrategy(
+        @PathVariable id: String,
+        @RequestBody strategyDTO: UpdateStrategyDTO
+    ): GetStrategyDTO {
+        return strategyService.updateStrategy(id, strategyDTO)
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    fun deleteStrategy(
+        @PathVariable id: String
+    ) {
+        strategyService.deleteStrategy(id)
+    }
+
+    @GetMapping("/{id}/exec")
     @PreAuthorize("isAuthenticated()")
     fun executeAlgorithm(
-        @PathVariable alias: String
+        @PathVariable id: String
     ): String {
         TODO()
     }
