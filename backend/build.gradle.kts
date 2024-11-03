@@ -38,13 +38,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-    // YAML 처리
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
-
-    // 파일 처리
-    implementation("org.apache.commons:commons-csv:1.9.0")
+    implementation("com.yahoofinance-api:YahooFinanceAPI:3.17.0")
 }
 
 dependencyManagement {

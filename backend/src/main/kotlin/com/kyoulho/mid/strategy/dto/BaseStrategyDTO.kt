@@ -2,10 +2,8 @@ package com.kyoulho.mid.strategy.dto
 
 import com.kyoulho.mid.const.RebalanceFrequency
 import com.kyoulho.mid.const.StrategyType
-import com.kyoulho.mid.strategy.AggressiveAsset
-import com.kyoulho.mid.strategy.CanaryAsset
-import com.kyoulho.mid.strategy.DefensiveAsset
-import com.kyoulho.mid.strategy.InvestmentStrategy
+import com.kyoulho.mid.strategy.AbstractStrategy
+import com.kyoulho.mid.strategy.Asset
 
 
 data class GetStrategyDTO(
@@ -13,12 +11,12 @@ data class GetStrategyDTO(
     val name: String,
     val type: StrategyType,
     val rebalanceFrequency: RebalanceFrequency,
-    val aggressiveAssets: Set<AggressiveAsset>,
-    val defensiveAssets: Set<DefensiveAsset>,
-    val canaryAssets: Set<CanaryAsset>,
+    val aggressiveAssets: Set<Asset>,
+    val defensiveAssets: Set<Asset>,
+    val canaryAssets: Set<Asset>,
 )
 
-fun InvestmentStrategy.toDTO(): GetStrategyDTO {
+fun AbstractStrategy.toDTO(): GetStrategyDTO {
     return GetStrategyDTO(
         alias = this.alias,
         name = this.name,
