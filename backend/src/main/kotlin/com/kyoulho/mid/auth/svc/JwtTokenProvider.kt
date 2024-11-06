@@ -2,7 +2,6 @@ package com.kyoulho.mid.auth.svc
 
 import com.kyoulho.mid.auth.dto.UserPrincipal
 import com.kyoulho.mid.exception.MIDException
-import com.kyoulho.mid.logger.logger
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
 import jakarta.annotation.PostConstruct
@@ -19,7 +18,6 @@ class JwtTokenProvider(
     @Value("\${jwt.secret}") private val secret: String,
     @Value("\${jwt.expirationHour}") private val expirationHours: Long
 ) {
-    private val log = logger()
     private lateinit var key: SecretKey
 
     @PostConstruct
