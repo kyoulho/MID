@@ -1,6 +1,5 @@
 package com.kyoulho.mid.auth.svc
 
-import com.kyoulho.mid.auth.dto.UserPrincipal
 import com.kyoulho.mid.exception.MIDException
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
@@ -24,11 +23,9 @@ class JwtTokenProvider(
         key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret))
     }
 
-    fun createAccessToken(userPrincipal: UserPrincipal): String {
-        val roles = userPrincipal.authorities.map { it.authority }
-
+    fun createAccessToken(id: String, roles: List<String>): String {
         return Jwts.builder()
-            .setSubject(userPrincipal.id)
+            .setSubject(id)
             .claim("roles", roles)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + expirationHours * 3_600_000))
@@ -36,9 +33,9 @@ class JwtTokenProvider(
             .compact()
     }
 
-    fun createRefreshToken(userPrincipal: UserPrincipal): String {
+    fun createRefreshToken(id: String): String {
         return Jwts.builder()
-            .setSubject(userPrincipal.id)
+            .setSubject(id)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + expirationHours * 6 * 3_600_000))
             .signWith(key, SignatureAlgorithm.HS512)

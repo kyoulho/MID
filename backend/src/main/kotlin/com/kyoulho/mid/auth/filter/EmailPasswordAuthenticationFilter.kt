@@ -31,8 +31,7 @@ class EmailPasswordAuthenticationFilter(
     }
 
     override fun attemptAuthentication(
-        request: HttpServletRequest,
-        response: HttpServletResponse
+        request: HttpServletRequest, response: HttpServletResponse
     ): Authentication {
         val loginRequest = objectMapper.readValue(request.reader, LoginRequest::class.java)
         val authRequest = UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
@@ -41,8 +40,8 @@ class EmailPasswordAuthenticationFilter(
 
     private fun authenticationSuccessHandler() = AuthenticationSuccessHandler { _, response, authentication ->
         val principal = authentication.principal as UserPrincipal
-        val accessToken = jwtTokenProvider.createAccessToken(principal)
-        val refreshToken = jwtTokenProvider.createRefreshToken(principal)
+        val accessToken = jwtTokenProvider.createAccessToken(principal.id, principal.authorities.map { it.authority })
+        val refreshToken = jwtTokenProvider.createRefreshToken(principal.id)
 
         response.contentType = "application/json"
         response.characterEncoding = "UTF-8"

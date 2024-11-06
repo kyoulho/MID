@@ -1,11 +1,11 @@
 package com.kyoulho.mid.auth.ctr
 
-import com.kyoulho.mid.auth.annotation.RequestUserId
 import com.kyoulho.mid.auth.dto.*
 import com.kyoulho.mid.auth.svc.JwtTokenProvider
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -24,11 +24,11 @@ class AuthController(
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/refresh")
-    fun refreshToken(@RequestUserId id: String): JwtResponse {
-        log.info("토큰 재발급 요청: {}", id)
+    fun refreshToken(@AuthenticationPrincipal principal: UserPrincipal): JwtResponse {
+        log.info("토큰 재발급 요청: {}", principal.id)
         return JwtResponse(
-            jwtTokenProvider.createAccessTokenFromUserId(id),
-            jwtTokenProvider.createRefreshTokenFromUserId(id),
+            jwtTokenProvider.createAccessToken(principal.id, principal.authorities.map { it.authority }),
+            jwtTokenProvider.createRefreshToken(principal.id)
         )
     }
 }
