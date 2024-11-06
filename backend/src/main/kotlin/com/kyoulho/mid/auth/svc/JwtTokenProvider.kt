@@ -2,21 +2,20 @@ package com.kyoulho.mid.auth.svc
 
 import com.kyoulho.mid.auth.dto.UserPrincipal
 import com.kyoulho.mid.exception.MIDException
-import io.jsonwebtoken.*
+import io.jsonwebtoken.JwtException
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import jakarta.annotation.PostConstruct
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.SecretKey
 
-@Component
 class JwtTokenProvider(
-    @Value("\${jwt.secret}") private val secret: String,
-    @Value("\${jwt.expirationHour}") private val expirationHours: Long
+    private val secret: String,
+    private val expirationHours: Long
 ) {
     private lateinit var key: SecretKey
 

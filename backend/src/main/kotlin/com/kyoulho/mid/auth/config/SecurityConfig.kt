@@ -25,13 +25,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private val userDetailsService: CustomUserDetailsService,
-    private val permitAllUrls: PermitAllUrlsProperties,
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val properties: SecurityProperties,
 ) {
 
     @Bean
+    fun jwtTokenProvider(): JwtTokenProvider {
+        return JwtTokenProvider(properties.jwt.secret, properties.jwt.expirationHour)
+    }
+
+    @Bean
     fun jwtAuthenticationFilter(): JwtAuthenticationFilter {
-        return JwtAuthenticationFilter(jwtTokenProvider, permitAllUrls)
+        return JwtAuthenticationFilter(jwtTokenProvider(), properties)
     }
 
     @Bean
@@ -39,32 +43,24 @@ class SecurityConfig(
         authenticationManager: AuthenticationManager
     ): EmailPasswordAuthenticationFilter {
         return EmailPasswordAuthenticationFilter(
-            authenticationManager,
-            ObjectMapper(),
-            jwtTokenProvider
+            authenticationManager, ObjectMapper(), jwtTokenProvider()
         )
     }
 
     @Bean
     fun securityFilterChain(
-        http: HttpSecurity,
-        authenticationManager: AuthenticationManager
+        http: HttpSecurity, authenticationManager: AuthenticationManager
     ): SecurityFilterChain {
-        http
-            .csrf { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+        http.csrf { it.disable() }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authz ->
-                permitAllUrls.permitAll.forEach { pattern ->
+                properties.permitAll.forEach { pattern ->
                     authz.requestMatchers(pattern).permitAll()
                 }
                 authz.anyRequest().authenticated()
-            }
-            .authenticationProvider(daoAuthenticationProvider())
-            .addFilterAt(
+            }.authenticationProvider(daoAuthenticationProvider()).addFilterAt(
                 emailPasswordAuthenticationFilter(authenticationManager),
                 UsernamePasswordAuthenticationFilter::class.java
-            )
-            .addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
+            ).addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling {
                 it.authenticationEntryPoint { _, response, authException ->
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.message)

@@ -1,6 +1,6 @@
 package com.kyoulho.mid.auth.filter
 
-import com.kyoulho.mid.auth.config.PermitAllUrlsProperties
+import com.kyoulho.mid.auth.config.SecurityProperties
 import com.kyoulho.mid.auth.svc.JwtTokenProvider
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
@@ -14,7 +14,7 @@ import java.io.IOException
 
 class JwtAuthenticationFilter(
     private val tokenProvider: JwtTokenProvider,
-    private val permitAllUrls: PermitAllUrlsProperties
+    private val permitAllUrls: SecurityProperties
 ) : OncePerRequestFilter() {
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
