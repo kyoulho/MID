@@ -4,6 +4,7 @@ import com.kyoulho.mid.auth.annotation.RequestUserId
 import com.kyoulho.mid.auth.dto.*
 import com.kyoulho.mid.auth.svc.JwtTokenProvider
 import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
@@ -14,6 +15,12 @@ class AuthController(
 ) {
 
     private val log = LoggerFactory.getLogger(AuthController::class.java)
+
+
+    @PostMapping("/login")
+    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<JwtResponse> {
+        TODO("스웨거용")
+    }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/refresh")

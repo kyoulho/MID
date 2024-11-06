@@ -24,7 +24,7 @@ class EmailPasswordAuthenticationFilter(
 
     init {
         setRequiresAuthenticationRequestMatcher(
-            AntPathRequestMatcher("/auth/login", HttpMethod.POST.name())
+            AntPathRequestMatcher("/api/auth/login", HttpMethod.POST.name())
         )
         setAuthenticationSuccessHandler(authenticationSuccessHandler())
         setAuthenticationFailureHandler(authenticationFailureHandler())
