@@ -35,7 +35,7 @@ class SecurityConfig(
 
     @Bean
     fun jwtAuthenticationFilter(): JwtAuthenticationFilter {
-        return JwtAuthenticationFilter(jwtTokenProvider(), properties)
+        return JwtAuthenticationFilter(jwtTokenProvider(), properties, userDetailsService)
     }
 
     @Bean

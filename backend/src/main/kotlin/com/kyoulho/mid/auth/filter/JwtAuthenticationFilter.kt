@@ -1,6 +1,7 @@
 package com.kyoulho.mid.auth.filter
 
 import com.kyoulho.mid.auth.config.SecurityProperties
+import com.kyoulho.mid.auth.svc.CustomUserDetailsService
 import com.kyoulho.mid.auth.svc.JwtTokenProvider
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
@@ -14,7 +15,8 @@ import java.io.IOException
 
 class JwtAuthenticationFilter(
     private val tokenProvider: JwtTokenProvider,
-    private val permitAllUrls: SecurityProperties
+    private val permitAllUrls: SecurityProperties,
+    private val userDetailsService: CustomUserDetailsService
 ) : OncePerRequestFilter() {
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
@@ -31,8 +33,9 @@ class JwtAuthenticationFilter(
     ) {
         getJwtFromRequest(request)?.let { token ->
             tokenProvider.getUserIdFromJWT(token).let { id ->
-                val authorities = tokenProvider.getAuthoritiesFromJWT(token)
-                val authentication = UsernamePasswordAuthenticationToken(id, null, authorities)
+                val userDetail = userDetailsService.loadUserByUserId(id)
+                val authorities = tokenProvider.getAuthoritiesFromJWT(token).apply { println(this) }
+                val authentication = UsernamePasswordAuthenticationToken(userDetail, null, authorities)
                 SecurityContextHolder.getContext().authentication = authentication
             }
         }
