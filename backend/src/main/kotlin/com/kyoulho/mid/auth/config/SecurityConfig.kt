@@ -2,9 +2,7 @@ package com.kyoulho.mid.auth.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kyoulho.mid.auth.filter.EmailPasswordAuthenticationFilter
-import com.kyoulho.mid.auth.filter.JwtAuthenticationFilter
 import com.kyoulho.mid.auth.svc.CustomUserDetailsService
-import com.kyoulho.mid.auth.svc.JwtTokenProvider
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -29,38 +27,46 @@ class SecurityConfig(
 ) {
 
     @Bean
-    fun jwtTokenProvider(): JwtTokenProvider {
-        return JwtTokenProvider(properties.jwt.secret, properties.jwt.expirationHour)
-    }
-
-    @Bean
-    fun jwtAuthenticationFilter(): JwtAuthenticationFilter {
-        return JwtAuthenticationFilter(jwtTokenProvider(), properties, userDetailsService)
-    }
-
-    @Bean
     fun emailPasswordAuthenticationFilter(
         authenticationManager: AuthenticationManager
     ): EmailPasswordAuthenticationFilter {
         return EmailPasswordAuthenticationFilter(
-            authenticationManager, ObjectMapper(), jwtTokenProvider()
-        )
+            authenticationManager, ObjectMapper(),
+        ).apply {
+            // 로그인 성공 시 리다이렉트나 추가 로직을 여기에 설정할 수 있습니다.
+            setAuthenticationSuccessHandler { request, response, authentication ->
+                // 성공 처리 로직
+                response.status = HttpServletResponse.SC_OK
+                // 필요 시 사용자 정보를 응답으로 반환
+            }
+
+            // 로그인 실패 시 처리
+            setAuthenticationFailureHandler { request, response, exception ->
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.message)
+            }
+        }
     }
 
     @Bean
     fun securityFilterChain(
         http: HttpSecurity, authenticationManager: AuthenticationManager
     ): SecurityFilterChain {
-        http.csrf { it.disable() }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+        http
+            .csrf { it.disable() }
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            }
             .authorizeHttpRequests { authz ->
                 properties.permitAll.forEach { pattern ->
                     authz.requestMatchers(pattern).permitAll()
                 }
                 authz.anyRequest().authenticated()
-            }.authenticationProvider(daoAuthenticationProvider()).addFilterAt(
+            }
+            .authenticationProvider(daoAuthenticationProvider())
+            .addFilterAt(
                 emailPasswordAuthenticationFilter(authenticationManager),
                 UsernamePasswordAuthenticationFilter::class.java
-            ).addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
+            )
             .exceptionHandling {
                 it.authenticationEntryPoint { _, response, authException ->
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.message)

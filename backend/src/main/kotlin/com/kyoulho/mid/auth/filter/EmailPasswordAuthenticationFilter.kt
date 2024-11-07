@@ -1,58 +1,55 @@
 package com.kyoulho.mid.auth.filter
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.kyoulho.mid.auth.dto.JwtResponse
-import com.kyoulho.mid.auth.dto.LoginRequest
-import com.kyoulho.mid.auth.dto.UserPrincipal
-import com.kyoulho.mid.auth.svc.JwtTokenProvider
+import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.web.authentication.AuthenticationFailureHandler
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+
+data class LoginRequest(
+    val email: String,
+    val password: String
+)
 
 class EmailPasswordAuthenticationFilter(
     authenticationManager: AuthenticationManager,
-    private val objectMapper: ObjectMapper,
-    private val jwtTokenProvider: JwtTokenProvider
-) : UsernamePasswordAuthenticationFilter(authenticationManager) {
+    private val objectMapper: ObjectMapper
+) : AbstractAuthenticationProcessingFilter(AntPathRequestMatcher("/api/auth/login", "POST")) {
 
     init {
-        setRequiresAuthenticationRequestMatcher(
-            AntPathRequestMatcher("/api/auth/login", HttpMethod.POST.name())
-        )
-        setAuthenticationSuccessHandler(authenticationSuccessHandler())
-        setAuthenticationFailureHandler(authenticationFailureHandler())
+        this.authenticationManager = authenticationManager
     }
 
     override fun attemptAuthentication(
-        request: HttpServletRequest, response: HttpServletResponse
+        request: HttpServletRequest,
+        response: HttpServletResponse
     ): Authentication {
-        val loginRequest = objectMapper.readValue(request.reader, LoginRequest::class.java)
+        val loginRequest = objectMapper.readValue(request.inputStream, LoginRequest::class.java)
         val authRequest = UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
         return authenticationManager.authenticate(authRequest)
     }
 
-    private fun authenticationSuccessHandler() = AuthenticationSuccessHandler { _, response, authentication ->
-        val principal = authentication.principal as UserPrincipal
-        val accessToken = jwtTokenProvider.createAccessToken(principal.id, principal.authorities.map { it.authority })
-        val refreshToken = jwtTokenProvider.createRefreshToken(principal.id)
-
-        response.contentType = "application/json"
-        response.characterEncoding = "UTF-8"
-        val jwtResponse = JwtResponse(accessToken, refreshToken)
-        response.writer.write(objectMapper.writeValueAsString(jwtResponse))
+    override fun successfulAuthentication(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        chain: FilterChain?,
+        authResult: Authentication
+    ) {
+        super.successfulAuthentication(request, response, chain, authResult)
+        // 세션이 자동으로 생성되며, UserDetails는 HttpSession에 저장됩니다.
     }
 
-    private fun authenticationFailureHandler() = AuthenticationFailureHandler { _, response, exception ->
-        response.status = HttpServletResponse.SC_UNAUTHORIZED
-        response.contentType = "application/json"
-        response.characterEncoding = "UTF-8"
-        response.writer.write("{\"error\": \"${exception.message}\"}")
+    override fun unsuccessfulAuthentication(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        failed: AuthenticationException
+    ) {
+        super.unsuccessfulAuthentication(request, response, failed)
+        // 실패 처리 로직은 SecurityConfig에서 정의된 핸들러가 처리합니다.
     }
 }
