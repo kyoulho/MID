@@ -24,7 +24,7 @@ class AuthController(
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/refresh")
-    fun refreshToken(@AuthenticationPrincipal principal: UserPrincipal): JwtResponse {
+    fun refreshToken(@AuthenticationPrincipal principal: CustomUserDetails): JwtResponse {
         log.info("토큰 재발급 요청: {}", principal.id)
         return JwtResponse(
             jwtTokenProvider.createAccessToken(principal.id, principal.authorities.map { it.authority }),

@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class UserPrincipal(
+class CustomUserDetails(
     val id: String,
     private val email: String,
     private val hashedPassword: String,
@@ -27,9 +27,9 @@ class UserPrincipal(
     override fun isEnabled(): Boolean = true
 
     companion object {
-        fun create(user: MidUser): UserPrincipal {
+        fun create(user: MidUser): CustomUserDetails {
             val authorities = listOf(SimpleGrantedAuthority(user.role))
-            return UserPrincipal(
+            return CustomUserDetails(
                 user.id,
                 user.email,
                 user.hashedPassword,
