@@ -1,19 +1,15 @@
 package com.kyoulho.mid.portfolio.svc
 
 import com.kyoulho.mid.exception.MIDException
-import com.kyoulho.mid.portfolio.dto.CreatePortfolioDTO
-import com.kyoulho.mid.portfolio.dto.GetPortfolioDTO
-import com.kyoulho.mid.portfolio.dto.UpdatePortfolioDTO
-import com.kyoulho.mid.portfolio.dto.toDTO
+import com.kyoulho.mid.portfolio.dto.*
 import com.kyoulho.mid.portfolio.entity.Portfolio
 import com.kyoulho.mid.portfolio.entity.PortfolioAsset
+import com.kyoulho.mid.portfolio.repo.PortfolioAssetRepository
 import com.kyoulho.mid.portfolio.repo.PortfolioRepository
-import com.kyoulho.mid.strategy.entity.Strategy
 import com.kyoulho.mid.strategy.repo.StrategyRepository
 import com.kyoulho.mid.user.repo.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
-import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,12 +17,13 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class PortfolioService(
     private val portfolioRepository: PortfolioRepository,
+    private val portfolioAssetRepository: PortfolioAssetRepository,
     private val strategyRepository: StrategyRepository,
     private val userRepository: UserRepository,
 ) {
     fun createPortfolio(userId: String, dto: CreatePortfolioDTO): GetPortfolioDTO {
         val user = userRepository.findByIdOrNull(userId)
-            ?: throw MIDException(HttpStatus.UNAUTHORIZED,"존재 하지 않는 유저 아이디 $userId")
+            ?: throw MIDException(HttpStatus.UNAUTHORIZED, "존재 하지 않는 유저 아이디 $userId")
 
         val strategy = dto.strategyId?.let {
             strategyRepository.findByIdOrNull(dto.strategyId)
@@ -39,31 +36,79 @@ class PortfolioService(
             user = user
         )
 
-        val assets = dto.assets.map {
-            PortfolioAsset(
-                intendedAsset = it.intendedAsset,
-                targetRatio = it.targetRatio
-            ).apply {
-                portfolio.setAsset(this)
-            }
+        dto.assets.forEach { assetDto ->
+            val portfolioAsset = PortfolioAsset(
+                intendedAsset = assetDto.intendedAsset,
+                targetRatio = assetDto.targetRatio,
+                portfolio = portfolio
+            )
+            portfolio.assets.add(portfolioAsset)
         }
+
         return portfolioRepository.save(portfolio).toDTO()
     }
 
+    @Transactional(readOnly = true)
     fun getPortfolio(userId: String): List<GetPortfolioDTO> {
-        TODO("Not yet implemented")
+        return portfolioRepository.findByUser_Id(userId)
+            .map { it.toDTO() }
     }
 
+    @Transactional(readOnly = true)
     fun getPortfolioById(userId: String, portfolioId: String): GetPortfolioDTO {
-        TODO("Not yet implemented")
+        return portfolioRepository.findByUser_IdAndId(userId, portfolioId)?.toDTO()
+            ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재 하지 않는 포트폴리오 아이디 $portfolioId")
     }
 
     fun updatePortfolio(userId: String, portfolioId: String, dto: UpdatePortfolioDTO): GetPortfolioDTO {
-        TODO("Not yet implemented")
+        val (strategyId, description) = dto
+
+        val portfolio = portfolioRepository.findByUser_IdAndId(userId, portfolioId)
+            ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재 하지 않는 포트폴리오 아이디 $portfolioId")
+
+        if (strategyId != null && portfolio.strategy?.id != strategyId) {
+            val strategy = strategyRepository.findByIdOrNull(strategyId)
+                ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재 하지 않는 전략 아이디 $strategyId")
+            portfolio.strategy = strategy
+        }
+
+        portfolio.description = description
+
+        return portfolioRepository.save(portfolio).toDTO()
+    }
+
+    fun updatePortfolioAsset(
+        userId: String,
+        portfolioId: String,
+        portfolioAssetId: String,
+        dto: UpdatePortfolioAssetDTO
+    ): GetPortfolioAssetDTO {
+        val portfolioAsset = portfolioAssetRepository.findByIdAndPortfolio_IdAndPortfolio_User_Id(
+            portfolioAssetId,
+            portfolioId,
+            userId
+        ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 포트폴리오 자산 아이디 $portfolioAssetId")
+
+        portfolioAsset.intendedAsset = dto.intendedAsset
+        portfolioAsset.targetRatio = dto.targetRatio
+
+        return portfolioAsset.toDTO()
     }
 
     fun deletePortfolio(userId: String, portfolioId: String) {
-        TODO("Not yet implemented")
+        portfolioRepository.findByUser_IdAndId(userId, portfolioId)?.let {
+            portfolioRepository.delete(it)
+        } ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재 하지 않는 포트폴리오 아이디 $portfolioId")
+    }
+
+    fun deletePortfolioAsset(userId: String, portfolioId: String, portfolioAssetId: String) {
+        val portfolioAsset = portfolioAssetRepository.findByIdAndPortfolio_IdAndPortfolio_User_Id(
+            portfolioAssetId,
+            portfolioId,
+            userId
+        ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 포트폴리오 자산 아이디 $portfolioAssetId")
+
+        portfolioAssetRepository.delete(portfolioAsset)
     }
 
 }

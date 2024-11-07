@@ -14,7 +14,7 @@ data class Portfolio(
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "strategy_id", nullable = true)
-    val strategy: Strategy? = null,
+    var strategy: Strategy? = null,
 
     @OneToMany(mappedBy = "portfolio", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var assets: MutableList<PortfolioAsset> = mutableListOf(),
@@ -29,9 +29,4 @@ data class Portfolio(
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     lateinit var createdAt: LocalDateTime
-
-    fun setAsset(asset: PortfolioAsset) {
-        this.assets.add(asset)
-        asset.portfolio = this
-    }
 }

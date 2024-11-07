@@ -1,9 +1,7 @@
 package com.kyoulho.mid.portfolio.ctr
 
 import com.kyoulho.mid.auth.dto.CustomUserDetails
-import com.kyoulho.mid.portfolio.dto.CreatePortfolioDTO
-import com.kyoulho.mid.portfolio.dto.GetPortfolioDTO
-import com.kyoulho.mid.portfolio.dto.UpdatePortfolioDTO
+import com.kyoulho.mid.portfolio.dto.*
 import com.kyoulho.mid.portfolio.svc.PortfolioService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
@@ -27,14 +25,14 @@ class PortfolioController(
 
 
     @GetMapping
-    fun getAccounts(
+    fun getPortfolio(
         @AuthenticationPrincipal principal: CustomUserDetails,
     ): List<GetPortfolioDTO> {
         return portfolioService.getPortfolio(principal.id)
     }
 
     @GetMapping("/{id}")
-    fun getAccountById(
+    fun getPortfolioById(
         @AuthenticationPrincipal principal: CustomUserDetails,
         @PathVariable id: String
     ): GetPortfolioDTO {
@@ -42,7 +40,7 @@ class PortfolioController(
     }
 
     @PutMapping("/{id}")
-    fun updateAccount(
+    fun updatePortfolio(
         @AuthenticationPrincipal principal: CustomUserDetails,
         @PathVariable id: String,
         @RequestBody dto: UpdatePortfolioDTO
@@ -52,10 +50,31 @@ class PortfolioController(
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteAccount(
+    fun deletePortfolio(
         @AuthenticationPrincipal principal: CustomUserDetails,
         @PathVariable id: String
     ) {
         portfolioService.deletePortfolio(principal.id, id)
+    }
+
+
+    @PutMapping("/{portfolioId}/asset/{assetId}")
+    fun updatePortfolioAsset(
+        @AuthenticationPrincipal principal: CustomUserDetails,
+        @PathVariable portfolioId: String,
+        @PathVariable assetId: String,
+        @RequestBody dto: UpdatePortfolioAssetDTO
+    ): GetPortfolioAssetDTO {
+        return portfolioService.updatePortfolioAsset(principal.id, portfolioId, assetId, dto)
+    }
+
+    @DeleteMapping("/{portfolioId}/asset/{assetId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deletePortfolioAsset(
+        @AuthenticationPrincipal principal: CustomUserDetails,
+        @PathVariable portfolioId: String,
+        @PathVariable assetId: String,
+    ) {
+        portfolioService.deletePortfolioAsset(principal.id, portfolioId, assetId)
     }
 }

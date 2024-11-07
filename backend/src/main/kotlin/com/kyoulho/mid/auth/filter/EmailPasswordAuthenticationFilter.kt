@@ -41,7 +41,6 @@ class EmailPasswordAuthenticationFilter(
         authResult: Authentication
     ) {
         super.successfulAuthentication(request, response, chain, authResult)
-        // 세션이 자동으로 생성되며, UserDetails는 HttpSession에 저장됩니다.
     }
 
     override fun unsuccessfulAuthentication(
@@ -50,6 +49,5 @@ class EmailPasswordAuthenticationFilter(
         failed: AuthenticationException
     ) {
         super.unsuccessfulAuthentication(request, response, failed)
-        // 실패 처리 로직은 SecurityConfig에서 정의된 핸들러가 처리합니다.
     }
 }

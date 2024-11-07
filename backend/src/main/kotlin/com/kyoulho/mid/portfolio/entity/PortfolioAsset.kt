@@ -9,20 +9,19 @@ data class PortfolioAsset(
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: String = "",
 
+    @Column(nullable = false)
+    var intendedAsset: Ticker,
 
     @Column(nullable = false)
-    val intendedAsset: Ticker,
+    var targetRatio: Double,
 
-    @Column(nullable = false)
-    val targetRatio: Double,
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "portfolio_id", nullable = false)
+    val portfolio: Portfolio,
 
     @OneToMany(mappedBy = "portfolioAsset", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     val records: List<AssetTradingRecord> = mutableListOf(),
 
     @OneToMany(mappedBy = "portfolioAsset", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     val dividends: List<AssetDividendRecord> = mutableListOf()
-) {
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "portfolio_id", nullable = false)
-    lateinit var portfolio: Portfolio
-}
+)
