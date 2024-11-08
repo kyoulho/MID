@@ -38,7 +38,7 @@ class PortfolioService(
 
         dto.assets.forEach { assetDto ->
             val portfolioAsset = PortfolioAsset(
-                intendedAsset = assetDto.intendedAsset,
+                ticker = assetDto.ticker,
                 targetRatio = assetDto.targetRatio,
                 portfolio = portfolio
             )
@@ -89,7 +89,7 @@ class PortfolioService(
             userId
         ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 포트폴리오 자산 아이디 $portfolioAssetId")
 
-        portfolioAsset.intendedAsset = dto.intendedAsset
+        portfolioAsset.ticker = dto.ticker
         portfolioAsset.targetRatio = dto.targetRatio
 
         return portfolioAsset.toDTO()
@@ -110,5 +110,52 @@ class PortfolioService(
 
         portfolioAssetRepository.delete(portfolioAsset)
     }
+
+    fun createAssetTradingRecord(
+        userId: String,
+        portfolioId: String,
+        assetId: String,
+        dto: CreateAssetTradingRecordDTO
+    ): GetAssetTradingRecordDTO {
+        TODO("Not yet implemented")
+    }
+
+    fun updateAssetTradingRecord(
+        userId: String,
+        portfolioId: String,
+        assetId: String,
+        tradingRecordId: String,
+        dto: CreateAssetTradingRecordDTO
+    ): GetAssetTradingRecordDTO {
+        TODO("Not yet implemented")
+    }
+
+    fun deleteAssetTradingRecord(userId: String, portfolioId: String, assetId: String, tradingRecordId: String) {
+        TODO("Not yet implemented")
+    }
+
+    fun createAssetDividendRecord(
+        id: String,
+        portfolioId: String,
+        assetId: String,
+        dto: CreateAssetDividendRecordDTO
+    ): GetAssetDividendRecordDTO {
+        TODO("Not yet implemented")
+    }
+
+    fun updateAssetDividendRecord(
+        id: String,
+        portfolioId: String,
+        assetId: String,
+        dividendRecordId: String,
+        dto: UpdateAssetDividendRecordDTO
+    ): GetAssetDividendRecordDTO {
+        TODO("Not yet implemented")
+    }
+
+    fun deleteAssetDividendRecord(id: String, portfolioId: String, assetId: String, dividendRecordId: String) {
+        TODO("Not yet implemented")
+    }
+
 
 }

@@ -16,7 +16,7 @@ class PortfolioController(
 ) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createAccount(
+    fun createPortfolio(
         @AuthenticationPrincipal principal: CustomUserDetails,
         @RequestBody dto: CreatePortfolioDTO
     ): GetPortfolioDTO {
@@ -75,6 +75,102 @@ class PortfolioController(
         @PathVariable portfolioId: String,
         @PathVariable assetId: String,
     ) {
-        portfolioService.deletePortfolioAsset(principal.id, portfolioId, assetId)
+        return portfolioService.deletePortfolioAsset(principal.id, portfolioId, assetId)
+    }
+
+    @PostMapping("/{portfolioId}/asset/{assetId}/trading-record")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createAssetTradingRecord(
+        @AuthenticationPrincipal principal: CustomUserDetails,
+        @PathVariable portfolioId: String,
+        @PathVariable assetId: String,
+        @RequestBody dto: CreateAssetTradingRecordDTO
+    ): GetAssetTradingRecordDTO {
+        return portfolioService.createAssetTradingRecord(
+            principal.id,
+            portfolioId,
+            assetId,
+            dto
+        )
+    }
+
+    @PutMapping("/{portfolioId}/asset/{assetId}/trading-record/{tradingRecordId}")
+    fun updateAssetTradingRecord(
+        @AuthenticationPrincipal principal: CustomUserDetails,
+        @PathVariable portfolioId: String,
+        @PathVariable assetId: String,
+        @PathVariable tradingRecordId: String,
+        @RequestBody dto: CreateAssetTradingRecordDTO
+    ): GetAssetTradingRecordDTO {
+        return portfolioService.updateAssetTradingRecord(
+            principal.id,
+            portfolioId,
+            assetId,
+            tradingRecordId,
+            dto
+        )
+    }
+
+    @DeleteMapping("/{portfolioId}/asset/{assetId}/trading-record/{tradingRecordId}")
+    fun deleteAssetTradingRecord(
+        @AuthenticationPrincipal principal: CustomUserDetails,
+        @PathVariable portfolioId: String,
+        @PathVariable assetId: String,
+        @PathVariable tradingRecordId: String
+    ) {
+        return portfolioService.deleteAssetTradingRecord(
+            principal.id,
+            portfolioId,
+            assetId,
+            tradingRecordId,
+        )
+    }
+
+    @PostMapping("/{portfolioId}/asset/{assetId}/dividend-record")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createAssetDividendRecord(
+        @AuthenticationPrincipal principal: CustomUserDetails,
+        @PathVariable portfolioId: String,
+        @PathVariable assetId: String,
+        @RequestBody dto: CreateAssetDividendRecordDTO
+    ): GetAssetDividendRecordDTO {
+        return portfolioService.createAssetDividendRecord(
+            principal.id,
+            portfolioId,
+            assetId,
+            dto
+        )
+    }
+
+    @PutMapping("/{portfolioId}/asset/{assetId}/dividend-record/{dividendRecordId}")
+    fun updateAssetDividendRecord(
+        @AuthenticationPrincipal principal: CustomUserDetails,
+        @PathVariable portfolioId: String,
+        @PathVariable assetId: String,
+        @PathVariable dividendRecordId: String,
+        @RequestBody dto: UpdateAssetDividendRecordDTO
+    ): GetAssetDividendRecordDTO {
+        return portfolioService.updateAssetDividendRecord(
+            principal.id,
+            portfolioId,
+            assetId,
+            dividendRecordId,
+            dto
+        )
+    }
+
+    @DeleteMapping("/{portfolioId}/asset/{assetId}/dividend-record/{dividendRecordId}")
+    fun deleteAssetDividendRecord(
+        @AuthenticationPrincipal principal: CustomUserDetails,
+        @PathVariable portfolioId: String,
+        @PathVariable assetId: String,
+        @PathVariable dividendRecordId: String
+    ) {
+        return portfolioService.deleteAssetDividendRecord(
+            principal.id,
+            portfolioId,
+            assetId,
+            dividendRecordId,
+        )
     }
 }

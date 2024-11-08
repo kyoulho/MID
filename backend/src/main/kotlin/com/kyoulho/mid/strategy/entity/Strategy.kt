@@ -2,7 +2,6 @@ package com.kyoulho.mid.strategy.entity
 
 import com.kyoulho.mid.const.RebalanceFrequency
 import com.kyoulho.mid.const.StrategyType
-import com.kyoulho.mid.const.Ticker
 import io.hypersistence.utils.hibernate.type.array.StringArrayType
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType
 import jakarta.persistence.*
@@ -55,5 +54,5 @@ data class Strategy(
 
 data class Asset(
     val name: String,
-    val ticker: Ticker
+    val ticker: String
 )

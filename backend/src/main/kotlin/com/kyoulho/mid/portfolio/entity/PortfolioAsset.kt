@@ -1,6 +1,5 @@
 package com.kyoulho.mid.portfolio.entity
 
-import com.kyoulho.mid.const.Ticker
 import jakarta.persistence.*
 
 @Entity
@@ -10,7 +9,7 @@ data class PortfolioAsset(
     val id: String = "",
 
     @Column(nullable = false)
-    var intendedAsset: Ticker,
+    var ticker: String,
 
     @Column(nullable = false)
     var targetRatio: Double,

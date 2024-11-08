@@ -1,9 +1,9 @@
 package com.kyoulho.mid.portfolio.entity
 
 import com.kyoulho.mid.account.entity.Account
-import com.kyoulho.mid.const.Ticker
 import com.kyoulho.mid.const.TradingType
 import jakarta.persistence.*
+import java.time.LocalDate
 import java.util.*
 
 @Entity
@@ -21,9 +21,6 @@ data class AssetTradingRecord(
     val portfolioAsset: PortfolioAsset,
 
     @Column(length = 50, nullable = false)
-    val ticker: Ticker,
-
-    @Column(length = 50, nullable = false)
     @Enumerated(EnumType.STRING)
     val tradingType: TradingType,
 
@@ -34,5 +31,5 @@ data class AssetTradingRecord(
     val price: Long,
 
     @Column(nullable = false)
-    val tradingDate: Date
+    val tradingDate: LocalDate
 )

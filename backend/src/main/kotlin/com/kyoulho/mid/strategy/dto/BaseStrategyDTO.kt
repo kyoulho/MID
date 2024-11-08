@@ -2,7 +2,6 @@ package com.kyoulho.mid.strategy.dto
 
 import com.kyoulho.mid.const.RebalanceFrequency
 import com.kyoulho.mid.const.StrategyType
-import com.kyoulho.mid.const.Ticker
 import com.kyoulho.mid.strategy.entity.Asset
 import com.kyoulho.mid.strategy.entity.Strategy
 
@@ -34,7 +33,7 @@ typealias UpdateStrategyDTO = CreateStrategyDTO
 
 data class AssetDTO(
     val name: String,
-    val ticker: Ticker
+    val ticker: String
 )
 
 fun Asset.toDTO(): AssetDTO {
