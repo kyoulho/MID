@@ -1,6 +1,6 @@
 package com.kyoulho.mid.const
 
-// 계좌의 종류
+// TODO 엔티티로 관리
 enum class AccountType(val fields: List<AccountField>) {
     ISA(listOf(AccountField.OPEN_DATE)),
 }
