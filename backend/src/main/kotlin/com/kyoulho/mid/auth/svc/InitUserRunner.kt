@@ -1,5 +1,6 @@
 package com.kyoulho.mid.auth.svc
 
+import com.kyoulho.mid.const.UserRole
 import com.kyoulho.mid.logger.logger
 import com.kyoulho.mid.user.entity.MidUser
 import com.kyoulho.mid.user.repo.UserRepository
@@ -26,7 +27,7 @@ class InitUserRunner(
                 hashedPassword = passwordEncoder.encode("string"),
                 name = "Kyoulho",
                 phoneNumber = "01012345678",
-                role = "ADMIN",
+                role = UserRole.ADMIN,
                 createdAt = LocalDateTime.now()
             )
 

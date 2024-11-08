@@ -12,15 +12,15 @@ data class PortfolioAssetDividendRecord(
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false)
-    val account: Account,
+    var account: Account,
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "portfolio_asset_id", nullable = false)
     val portfolioAsset: PortfolioAsset,
 
     @Column(nullable = false)
-    val amount: Long,
+    var amount: Long,
 
     @Column(nullable = false)
-    val dividendDate: LocalDate,
+    var dividendDate: LocalDate,
 )

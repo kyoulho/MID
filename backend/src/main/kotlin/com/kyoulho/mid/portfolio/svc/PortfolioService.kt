@@ -3,10 +3,10 @@ package com.kyoulho.mid.portfolio.svc
 import com.kyoulho.mid.account.repo.AccountRepository
 import com.kyoulho.mid.exception.MIDException
 import com.kyoulho.mid.portfolio.dto.*
-import com.kyoulho.mid.portfolio.entity.PortfolioAssetTradingRecord
 import com.kyoulho.mid.portfolio.entity.Portfolio
 import com.kyoulho.mid.portfolio.entity.PortfolioAsset
 import com.kyoulho.mid.portfolio.entity.PortfolioAssetDividendRecord
+import com.kyoulho.mid.portfolio.entity.PortfolioAssetTradingRecord
 import com.kyoulho.mid.portfolio.repo.PortfolioAssetDividendRecordRepository
 import com.kyoulho.mid.portfolio.repo.PortfolioAssetRepository
 import com.kyoulho.mid.portfolio.repo.PortfolioAssetTradingRecordRepository
@@ -158,8 +158,24 @@ class PortfolioService(
         tradingRecordId: String,
         dto: CreateAssetTradingRecordDTO
     ): GetAssetTradingRecordDTO {
-        portfolioAssetTradingRecordRepository.findByIdAndPortfolio_IdAndPortfolio_User_Id()
-        TODO()
+        val tradingRecord =
+            portfolioAssetTradingRecordRepository
+                .findByIdAndPortfolioAsset_IdAndPortfolioAsset_Portfolio_IdAndPortfolioAsset_Portfolio_User_Id(
+                    tradingRecordId, portfolioAssetId, portfolioId, userId
+                ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 거래 기록 아이디 $tradingRecordId")
+
+        tradingRecord.apply {
+            if (dto.accountId != this.account.id) {
+                account = accountRepository.findByIdOrNull(dto.accountId)
+                    ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 계좌 아이디 ${dto.accountId}")
+            }
+            this.tradingType = dto.tradingType
+            this.quantity = dto.quantity
+            this.price = dto.price
+            this.tradingDate = dto.tradingDate
+        }
+
+        return portfolioAssetTradingRecordRepository.save(tradingRecord).toDTO()
     }
 
     fun deleteAssetTradingRecord(
@@ -168,30 +184,76 @@ class PortfolioService(
         portfolioAssetId: String,
         tradingRecordId: String
     ) {
-        TODO("Not yet implemented")
+        val tradingRecord =
+            portfolioAssetTradingRecordRepository.findByIdAndPortfolioAsset_IdAndPortfolioAsset_Portfolio_IdAndPortfolioAsset_Portfolio_User_Id(
+                tradingRecordId, portfolioAssetId, portfolioId, userId
+            ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 거래 기록 아이디 $tradingRecordId")
+
+        portfolioAssetTradingRecordRepository.delete(tradingRecord)
     }
 
     fun createAssetDividendRecord(
-        id: String,
+        userId: String,
         portfolioId: String,
         portfolioAssetId: String,
         dto: CreateAssetDividendRecordDTO
     ): GetAssetDividendRecordDTO {
-        TODO("Not yet implemented")
+        val portfolioAsset = portfolioAssetRepository.findByIdAndPortfolio_IdAndPortfolio_User_Id(
+            portfolioAssetId, portfolioId, userId
+        ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 포트폴리오 자산 아이디 $portfolioAssetId")
+
+        val account = accountRepository.findByIdOrNull(dto.accountId) ?: throw MIDException(
+            HttpStatus.BAD_REQUEST,
+            "존재하지 않는 계좌 아이디 ${dto.accountId}"
+        )
+
+        val dividendRecord = PortfolioAssetDividendRecord(
+            account = account,
+            portfolioAsset = portfolioAsset,
+            amount = dto.amount,
+            dividendDate = dto.dividendDate
+        )
+
+        portfolioAssetDividendRecordRepository.save(dividendRecord)
+        return dividendRecord.toDTO()
     }
 
     fun updateAssetDividendRecord(
-        id: String,
+        userId: String,
         portfolioId: String,
         portfolioAssetId: String,
         dividendRecordId: String,
         dto: UpdateAssetDividendRecordDTO
     ): GetAssetDividendRecordDTO {
-        TODO("Not yet implemented")
+        val dividendRecord =
+            portfolioAssetDividendRecordRepository.findByIdAndPortfolioAsset_IdAndPortfolioAsset_Portfolio_IdAndPortfolioAsset_Portfolio_User_Id(
+                dividendRecordId, portfolioAssetId, portfolioId, userId
+            ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 배당 기록 아이디 $dividendRecordId")
+
+        dividendRecord.apply {
+            if (dto.accountId != this.account.id) {
+                this.account = accountRepository.findByIdOrNull(dto.accountId)
+                    ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 계좌 아이디 ${dto.accountId}")
+            }
+            this.amount = dto.amount
+            this.dividendDate = dto.dividendDate
+        }
+
+        return portfolioAssetDividendRecordRepository.save(dividendRecord).toDTO()
     }
 
-    fun deleteAssetDividendRecord(id: String, portfolioId: String, portfolioAssetId: String, dividendRecordId: String) {
-        TODO("Not yet implemented")
+    fun deleteAssetDividendRecord(
+        userId: String,
+        portfolioId: String,
+        portfolioAssetId: String,
+        dividendRecordId: String
+    ) {
+        val dividendRecord =
+            portfolioAssetDividendRecordRepository.findByIdAndPortfolioAsset_IdAndPortfolioAsset_Portfolio_IdAndPortfolioAsset_Portfolio_User_Id(
+                dividendRecordId, portfolioAssetId, portfolioId, userId
+            ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 배당 기록 아이디 $dividendRecordId")
+
+        portfolioAssetDividendRecordRepository.delete(dividendRecord)
     }
 
 

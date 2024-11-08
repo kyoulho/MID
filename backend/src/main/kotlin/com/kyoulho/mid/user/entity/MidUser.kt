@@ -1,6 +1,7 @@
 package com.kyoulho.mid.user.entity
 
 import com.kyoulho.mid.account.entity.Account
+import com.kyoulho.mid.const.UserRole
 import com.kyoulho.mid.portfolio.entity.Portfolio
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
@@ -36,8 +37,6 @@ data class MidUser(
     val portfolios: List<Portfolio> = mutableListOf(),
 
     @Column(length = 10, nullable = false)
-    val role: String,
-
-    @Column(name = "last_password_changed_at")
-    val lastPasswordChangedAt: LocalDateTime? = null
+    @Enumerated(EnumType.STRING)
+    val role: UserRole,
 )

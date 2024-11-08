@@ -19,8 +19,8 @@ data class Account(
     @Column(length = 200, nullable = false)
     var name: String,
 
-    @Column(length = 200, nullable = false)
-    var description: String?,
+    @Column(length = 200)
+    var description: String? = null,
 
     @Column(length = 200, nullable = false)
     var issuer: String,

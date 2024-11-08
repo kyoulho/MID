@@ -28,7 +28,7 @@ class CustomUserDetails(
 
     companion object {
         fun create(user: MidUser): CustomUserDetails {
-            val authorities = listOf(SimpleGrantedAuthority(user.role))
+            val authorities = listOf(SimpleGrantedAuthority(user.role.name))
             return CustomUserDetails(
                 user.id,
                 user.email,

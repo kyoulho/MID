@@ -5,7 +5,6 @@ import com.kyoulho.mid.strategy.dto.CreateStrategyDTO
 import com.kyoulho.mid.strategy.dto.GetStrategyDTO
 import com.kyoulho.mid.strategy.dto.UpdateStrategyDTO
 import com.kyoulho.mid.strategy.dto.toDTO
-import com.kyoulho.mid.strategy.entity.Asset
 import com.kyoulho.mid.strategy.entity.Strategy
 import com.kyoulho.mid.strategy.repo.StrategyRepository
 import org.springframework.http.HttpStatus
@@ -31,17 +30,9 @@ class StrategyService(
 
     fun createStrategy(dto: CreateStrategyDTO): GetStrategyDTO {
         return Strategy(
-            alias = dto.alias,
             name = dto.name,
-            type = dto.type,
             rebalanceFrequency = dto.rebalanceFrequency,
-            rules = dto.rules.toMutableList(),
-            aggressiveAssets = dto.aggressiveAssets.map { Asset(it.name, it.ticker) }.toMutableSet(),
-            defensiveAssets = dto.defensiveAssets.map { Asset(it.name, it.ticker) }.toMutableSet(),
-            canaryAssets = dto.defensiveAssets.map { Asset(it.name, it.ticker) }.toMutableSet(),
         ).apply {
-            rules.addAll(dto.rules)
-            aggressiveAssets
             strategyRepository.save(this)
         }.toDTO()
     }
@@ -51,14 +42,8 @@ class StrategyService(
         return strategyRepository.findById(id)
             .orElseThrow { throw MIDException(HttpStatus.BAD_REQUEST, "전략을 찾을 수 없습니다.") }
             .apply {
-                alias = dto.alias
                 name = dto.name
-                type = dto.type
                 rebalanceFrequency = dto.rebalanceFrequency
-                rules = dto.rules.toMutableList()
-                aggressiveAssets = dto.aggressiveAssets.map { Asset(it.name, it.ticker) }.toMutableSet()
-                defensiveAssets = dto.defensiveAssets.map { Asset(it.name, it.ticker) }.toMutableSet()
-                canaryAssets = dto.defensiveAssets.map { Asset(it.name, it.ticker) }.toMutableSet()
             }.toDTO()
     }
 

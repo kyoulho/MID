@@ -12,9 +12,9 @@ data class PortfolioAssetTradingRecord(
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: String = "",
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
-    val account: Account,
+    var account: Account,
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "portfolio_asset_id", nullable = false)
@@ -22,14 +22,14 @@ data class PortfolioAssetTradingRecord(
 
     @Column(length = 50, nullable = false)
     @Enumerated(EnumType.STRING)
-    val tradingType: TradingType,
+    var tradingType: TradingType,
 
     @Column(nullable = false)
-    val quantity: Long,
+    var quantity: Long,
 
     @Column(nullable = false)
-    val price: Long,
+    var price: Long,
 
     @Column(nullable = false)
-    val tradingDate: LocalDate
+    var tradingDate: LocalDate
 )

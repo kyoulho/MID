@@ -31,30 +31,30 @@ class PortfolioController(
         return portfolioService.getPortfolio(principal.id)
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{portfolioId}")
     fun getPortfolioById(
         @AuthenticationPrincipal principal: CustomUserDetails,
-        @PathVariable id: String
+        @PathVariable portfolioId: String
     ): GetPortfolioDTO {
-        return portfolioService.getPortfolioById(principal.id, id)
+        return portfolioService.getPortfolioById(principal.id, portfolioId)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{portfolioId}")
     fun updatePortfolio(
         @AuthenticationPrincipal principal: CustomUserDetails,
-        @PathVariable id: String,
+        @PathVariable portfolioId: String,
         @RequestBody dto: UpdatePortfolioDTO
     ): GetPortfolioDTO {
-        return portfolioService.updatePortfolio(principal.id, id, dto)
+        return portfolioService.updatePortfolio(principal.id, portfolioId, dto)
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{portfolioId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deletePortfolio(
         @AuthenticationPrincipal principal: CustomUserDetails,
-        @PathVariable id: String
+        @PathVariable portfolioId: String
     ) {
-        portfolioService.deletePortfolio(principal.id, id)
+        portfolioService.deletePortfolio(principal.id, portfolioId)
     }
 
 
