@@ -1,6 +1,7 @@
 package com.kyoulho.mid.portfolio.dto
 
 import com.kyoulho.mid.const.TradingType
+import com.kyoulho.mid.portfolio.entity.PortfolioAssetTradingRecord
 import java.time.LocalDate
 
 data class CreateAssetTradingRecordDTO(
@@ -21,3 +22,9 @@ data class GetAssetTradingRecordDTO(
     val price: Long,
     val tradingDate: LocalDate
 )
+
+fun PortfolioAssetTradingRecord.toDTO(): GetAssetTradingRecordDTO {
+    return GetAssetTradingRecordDTO(
+        id, tradingType, quantity, price, tradingDate
+    )
+}

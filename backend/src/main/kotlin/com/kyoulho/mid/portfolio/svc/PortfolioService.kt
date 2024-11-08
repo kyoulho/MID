@@ -1,10 +1,15 @@
 package com.kyoulho.mid.portfolio.svc
 
+import com.kyoulho.mid.account.repo.AccountRepository
 import com.kyoulho.mid.exception.MIDException
 import com.kyoulho.mid.portfolio.dto.*
+import com.kyoulho.mid.portfolio.entity.PortfolioAssetTradingRecord
 import com.kyoulho.mid.portfolio.entity.Portfolio
 import com.kyoulho.mid.portfolio.entity.PortfolioAsset
+import com.kyoulho.mid.portfolio.entity.PortfolioAssetDividendRecord
+import com.kyoulho.mid.portfolio.repo.PortfolioAssetDividendRecordRepository
 import com.kyoulho.mid.portfolio.repo.PortfolioAssetRepository
+import com.kyoulho.mid.portfolio.repo.PortfolioAssetTradingRecordRepository
 import com.kyoulho.mid.portfolio.repo.PortfolioRepository
 import com.kyoulho.mid.strategy.repo.StrategyRepository
 import com.kyoulho.mid.user.repo.UserRepository
@@ -18,9 +23,13 @@ import org.springframework.transaction.annotation.Transactional
 class PortfolioService(
     private val portfolioRepository: PortfolioRepository,
     private val portfolioAssetRepository: PortfolioAssetRepository,
+    private val portfolioAssetTradingRecordRepository: PortfolioAssetTradingRecordRepository,
+    private val portfolioAssetDividendRecordRepository: PortfolioAssetDividendRecordRepository,
     private val strategyRepository: StrategyRepository,
     private val userRepository: UserRepository,
+    private val accountRepository: AccountRepository,
 ) {
+
     fun createPortfolio(userId: String, dto: CreatePortfolioDTO): GetPortfolioDTO {
         val user = userRepository.findByIdOrNull(userId)
             ?: throw MIDException(HttpStatus.UNAUTHORIZED, "존재 하지 않는 유저 아이디 $userId")
@@ -114,30 +123,58 @@ class PortfolioService(
     fun createAssetTradingRecord(
         userId: String,
         portfolioId: String,
-        assetId: String,
+        portfolioAssetId: String,
         dto: CreateAssetTradingRecordDTO
     ): GetAssetTradingRecordDTO {
-        TODO("Not yet implemented")
+        val portfolioAsset = portfolioAssetRepository.findByIdAndPortfolio_IdAndPortfolio_User_Id(
+            portfolioAssetId,
+            portfolioId,
+            userId
+        ) ?: throw MIDException(HttpStatus.BAD_REQUEST, "존재하지 않는 포트폴리오 자산 아이디 $portfolioAssetId")
+
+        val account = accountRepository.findByIdOrNull(dto.accountId) ?: throw MIDException(
+            HttpStatus.BAD_REQUEST,
+            "존재하지 않는 계좌 아이디 ${dto.accountId}"
+        )
+
+        val tradingRecord = PortfolioAssetTradingRecord(
+            account = account,
+            portfolioAsset = portfolioAsset,
+            tradingType = dto.tradingType,
+            quantity = dto.quantity,
+            price = dto.price,
+            tradingDate = dto.tradingDate
+        )
+        portfolioAsset.records.add(tradingRecord)
+        portfolioAssetRepository.save(portfolioAsset)
+
+        return tradingRecord.toDTO()
     }
 
     fun updateAssetTradingRecord(
         userId: String,
         portfolioId: String,
-        assetId: String,
+        portfolioAssetId: String,
         tradingRecordId: String,
         dto: CreateAssetTradingRecordDTO
     ): GetAssetTradingRecordDTO {
-        TODO("Not yet implemented")
+        portfolioAssetTradingRecordRepository.findByIdAndPortfolio_IdAndPortfolio_User_Id()
+        TODO()
     }
 
-    fun deleteAssetTradingRecord(userId: String, portfolioId: String, assetId: String, tradingRecordId: String) {
+    fun deleteAssetTradingRecord(
+        userId: String,
+        portfolioId: String,
+        portfolioAssetId: String,
+        tradingRecordId: String
+    ) {
         TODO("Not yet implemented")
     }
 
     fun createAssetDividendRecord(
         id: String,
         portfolioId: String,
-        assetId: String,
+        portfolioAssetId: String,
         dto: CreateAssetDividendRecordDTO
     ): GetAssetDividendRecordDTO {
         TODO("Not yet implemented")
@@ -146,14 +183,14 @@ class PortfolioService(
     fun updateAssetDividendRecord(
         id: String,
         portfolioId: String,
-        assetId: String,
+        portfolioAssetId: String,
         dividendRecordId: String,
         dto: UpdateAssetDividendRecordDTO
     ): GetAssetDividendRecordDTO {
         TODO("Not yet implemented")
     }
 
-    fun deleteAssetDividendRecord(id: String, portfolioId: String, assetId: String, dividendRecordId: String) {
+    fun deleteAssetDividendRecord(id: String, portfolioId: String, portfolioAssetId: String, dividendRecordId: String) {
         TODO("Not yet implemented")
     }
 

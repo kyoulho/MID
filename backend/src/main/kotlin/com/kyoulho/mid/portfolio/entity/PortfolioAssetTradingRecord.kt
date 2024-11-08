@@ -7,7 +7,7 @@ import java.time.LocalDate
 import java.util.*
 
 @Entity
-data class AssetTradingRecord(
+data class PortfolioAssetTradingRecord(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: String = "",

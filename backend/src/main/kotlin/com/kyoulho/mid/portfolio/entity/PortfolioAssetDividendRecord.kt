@@ -5,7 +5,7 @@ import jakarta.persistence.*
 import java.time.LocalDate
 
 @Entity
-data class AssetDividendRecord(
+data class PortfolioAssetDividendRecord(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: String = "",

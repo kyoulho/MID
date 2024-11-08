@@ -19,8 +19,8 @@ data class PortfolioAsset(
     val portfolio: Portfolio,
 
     @OneToMany(mappedBy = "portfolioAsset", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val records: List<AssetTradingRecord> = mutableListOf(),
+    val records: MutableList<PortfolioAssetTradingRecord> = mutableListOf(),
 
     @OneToMany(mappedBy = "portfolioAsset", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val dividends: List<AssetDividendRecord> = mutableListOf()
+    val dividends: MutableList<PortfolioAssetDividendRecord> = mutableListOf()
 )
