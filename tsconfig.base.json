@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": "./", // 루트를 기준으로 설정
+    "paths": {
+      "@shared/*": ["packages/*"] // 공유 패키지 경로
+    }
+  }
+}
