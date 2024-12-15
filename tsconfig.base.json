@@ -3,13 +3,15 @@
     "target": "ESNext",
     "module": "CommonJS",
     "lib": ["ESNext", "DOM"],
-    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "baseUrl": "./", // 루트를 기준으로 설정
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "baseUrl": "./",
     "paths": {
-      "@shared/*": ["packages/*"] // 공유 패키지 경로
+      "@shared/*": ["packages/*"]
     }
   }
 }
