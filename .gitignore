@@ -1,5 +1,6 @@
-# intellij
+# IntelliJ
 .idea
+*.iml
 
 # Node.js dependencies
 node_modules/
@@ -41,3 +42,25 @@ coverage/
 
 # TurboRepo
 .turbo/
+
+# Dist
+/apps/**/dist/
+/packages/**/dist/
+
+# Visual Studio Code
+.vscode/
+
+# Docker
+docker-compose.override.yml
+*.dockerfile
+
+# Test Output
+junit-report.xml
+cypress/screenshots/
+cypress/videos/
+
+# Backup and temp files
+*.out
+*.bak
+*.swp
+
