@@ -1,20 +1,20 @@
 import {Entity, Column, PrimaryGeneratedColumn} from "typeorm";
-import {AccountType} from "@shared/shared/src/enums/account-type.enum";
+import {AccountType, UUID} from "@shared/shared";
 
-@Entity("investment_account")
+@Entity("account")
 export class Account {
-    @PrimaryGeneratedColumn()
-    id!: number; // 고유 ID
+    @PrimaryGeneratedColumn("uuid")
+    id!: UUID;
 
     @Column({length: 50})
-    accountType!: AccountType;
+    company!: string;
 
-    @Column({length: 100})
-    accountName!: string; // 계좌 이름: '메인 계좌', '암호화폐 계좌'
+    @Column({
+        type: "enum",
+        enum: AccountType,
+    })
+    type!: AccountType;
 
-    @Column()
-    balance!: number; // 계좌 잔액
-
-    @Column({default: true})
-    isActive!: boolean; // 활성화 여부
+    @Column({length: 100, nullable: true})
+    alias?: string;
 }
