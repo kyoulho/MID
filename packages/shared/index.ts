@@ -1,3 +1,3 @@
-export * from "./src/enums";
-export * from "./src/dtos/account.dto";
-export * from "./src/types";
+export * from "./types";
+export * from "./enums";
+export * from "./dtos/account.dto";

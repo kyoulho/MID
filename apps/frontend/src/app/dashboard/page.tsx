@@ -1,6 +1,3 @@
-// dashboard/page.tsx
-"use client";
-
 import { Box, Text } from "@chakra-ui/react";
 
 export default function DashboardPage() {
@@ -10,7 +7,8 @@ export default function DashboardPage() {
         Welcome to the Dashboard!
       </Text>
       <Text>
-        This is your main dashboard area where you can add widgets, charts, or any relevant information.
+        This is your main dashboard area where you can add widgets, charts, or
+        any relevant information.
       </Text>
     </Box>
   );

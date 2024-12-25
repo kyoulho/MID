@@ -1,9 +1,13 @@
 {
   "name": "@mid/shared",
   "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --outDir dist"
+  },
+  "files": ["dist/**/*", "package.json"],
+  "devDependencies": {
+    "typescript": "^5.0.0"
   }
 }

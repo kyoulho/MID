@@ -1,7 +1,17 @@
-import {Flex, Spacer, Text} from "@chakra-ui/react";
-import {Avatar} from "../ui/avatar";
+"use client";
+
+import { Flex, Spacer, Text } from "@chakra-ui/react";
+import { usePathname } from "next/navigation";
+import { routes } from "@/routes";
+import { Avatar } from "@/components/ui/avatar";
 
 const Header = () => {
+  const pathname = usePathname();
+
+  // 현재 경로에 해당하는 라벨 찾기
+  const currentRoute = routes.find((route) => route.href === pathname);
+  const currentLabel = currentRoute ? currentRoute.label : "알 수 없는 페이지";
+
   return (
     <Flex
       as="header"
@@ -16,7 +26,7 @@ const Header = () => {
       boxShadow="sm"
     >
       <Text fontSize="lg" fontWeight="bold">
-        Dashboard
+        {currentLabel}
       </Text>
       <Spacer />
       <Avatar name="John Doe" size="sm" />
