@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "CommonJS",
-    "lib": ["ESNext", "DOM"],
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
-    "baseUrl": "./",
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
     "paths": {
-      "@shared/*": ["packages/*"]
+      "@shared/*": ["packages/shared/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }
