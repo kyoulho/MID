@@ -1,5 +1,6 @@
+// app/layout.tsx
 import { ReactNode } from "react";
-import { Provider } from "@/components/ui/provider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 
@@ -12,7 +13,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning={true}>
       <body>
-        <Provider>
+        <ThemeProvider>
           <Sidebar />
           <Header />
           <main
@@ -24,7 +25,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           >
             {children}
           </main>
-        </Provider>
+        </ThemeProvider>
       </body>
     </html>
   );

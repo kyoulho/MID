@@ -1,9 +1,8 @@
 "use client";
 
-import { Flex, Spacer, Text } from "@chakra-ui/react";
+import { Flex, Spacer, Text, Avatar } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { routes } from "@/routes";
-import { Avatar } from "@/components/ui/avatar";
 
 const Header = () => {
   const pathname = usePathname();
