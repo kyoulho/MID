@@ -1,14 +1,17 @@
 "use client";
 
-import { Flex, Spacer, Text, Avatar } from "@chakra-ui/react";
+import { Avatar, Flex, Spacer, Text } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
-import { routes } from "@/routes";
+import { FC } from "react";
+import { Routes, routes } from "@/routes";
 
-const Header = () => {
+const Header: FC = () => {
   const pathname = usePathname();
 
   // 현재 경로에 해당하는 라벨 찾기
-  const currentRoute = routes.find((route) => route.href === pathname);
+  const currentRoute: Routes | undefined = routes.find(
+    (route) => route.href === pathname,
+  );
   const currentLabel = currentRoute ? currentRoute.label : "알 수 없는 페이지";
 
   return (

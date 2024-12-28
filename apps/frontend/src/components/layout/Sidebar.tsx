@@ -1,8 +1,9 @@
 import { Box, VStack, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { routes } from "@/routes";
+import { FC } from "react";
 
-const Sidebar = () => {
+const Sidebar: FC = () => {
   return (
     <Box
       as="nav"

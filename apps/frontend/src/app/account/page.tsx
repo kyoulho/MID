@@ -1,25 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Box,
-  Text,
   Button,
-  useDisclosure,
-  Table,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
+  Table,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { AccountType, GetAccountDTO } from "@mid/shared";
 
-async function fetchAccounts(): Promise<GetAccountDTO[]> {
+function fetchAccounts(): GetAccountDTO[] {
   return [
     {
       id: "1111-222-3333-4444-555",
@@ -32,7 +32,7 @@ async function fetchAccounts(): Promise<GetAccountDTO[]> {
   ];
 }
 
-export default function AccountPage() {
+const AccountPage: FC = () => {
   const [accounts, setAccounts] = useState<GetAccountDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAccount, setSelectedAccount] = useState<GetAccountDTO | null>(
@@ -53,12 +53,9 @@ export default function AccountPage() {
   const [newAccountName, setNewAccountName] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchAccounts();
-      setAccounts(data);
-      setLoading(false);
-    };
-    fetchData();
+    const data = fetchAccounts();
+    setAccounts(data);
+    setLoading(false);
   }, []);
 
   return (
@@ -158,4 +155,6 @@ export default function AccountPage() {
       </Modal>
     </Box>
   );
-}
+};
+
+export default AccountPage;

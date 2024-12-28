@@ -1,19 +1,33 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "preserve",
-    "allowJs": true,
-    "incremental": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "rootDir": ".",
     "baseUrl": "./src",
     "paths": {
       "@shared/*": ["../../packages/shared/*"],
       "@/*": ["./*"]
     },
+    "jsx": "preserve",
+    "allowJs": true,
+    "incremental": true,
     "noEmit": true,
     "isolatedModules": true,
-    "module": "ESNext",              // ESNext 모듈 시스템
-    "moduleResolution": "Bundler",  // 번들러 기반 모듈 해석
-    "skipLibCheck": true,           // 외부 라이브러리 타입 검사 생략
     "plugins": [
       {
         "name": "next"
@@ -26,6 +40,7 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }

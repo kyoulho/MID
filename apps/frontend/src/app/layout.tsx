@@ -1,32 +1,26 @@
-// app/layout.tsx
-import { ReactNode } from "react";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import React, { FC, PropsWithChildren } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
+import { Box, ChakraProvider } from "@chakra-ui/react";
 
 export const metadata = {
   title: "My Investment Diary",
-  description: "An app using Chakra UI with Next.js",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
     <html lang="ko" suppressHydrationWarning={true}>
       <body>
-        <ThemeProvider>
+        <ChakraProvider>
           <Sidebar />
           <Header />
-          <main
-            style={{
-              marginLeft: "240px",
-              marginTop: "60px",
-              padding: "20px",
-            }}
-          >
+          <Box ml="240px" mt="60px" p="20px">
             {children}
-          </main>
-        </ThemeProvider>
+          </Box>
+        </ChakraProvider>
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

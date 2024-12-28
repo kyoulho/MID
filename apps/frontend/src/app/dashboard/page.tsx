@@ -1,6 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
+import { FC } from "react";
 
-export default function DashboardPage() {
+const DashboardPage: FC = () => {
   return (
     <Box>
       <Text fontSize="2xl" mb="4">
@@ -12,4 +13,6 @@ export default function DashboardPage() {
       </Text>
     </Box>
   );
-}
+};
+
+export default DashboardPage;
