@@ -8,7 +8,16 @@ export interface AccountFormState {
   number: string;
 }
 
-export const useAccountForm = (initialState: AccountFormState) => {
+export const useAccountForm = (
+  initialState: AccountFormState,
+): {
+  formState: AccountFormState;
+  handleChange: (
+    field: keyof AccountFormState,
+  ) => (e: ChangeEvent<HTMLInputElement>) => void;
+  handleSelectChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  isFormValid: boolean;
+} => {
   const [formState, setFormState] = useState<AccountFormState>(initialState);
 
   // 입력 필드 변경 핸들러

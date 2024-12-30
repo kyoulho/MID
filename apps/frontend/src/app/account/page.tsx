@@ -2,7 +2,7 @@
 
 import React, { FC, useEffect, useState } from "react";
 import { Box, Button, HStack, Spinner, Text } from "@chakra-ui/react";
-import { AccountType, CreateAccountDTO, GetAccountDTO } from "@mid/shared";
+import { AccountType, GetAccountDTO } from "@mid/shared";
 import AccountRegisterForm from "@/components/account/AccountRegisterForm";
 import AccountDetail from "@/components/account/AccountDetail";
 import AccountTable from "@/components/account/AccountTable";
@@ -11,11 +11,12 @@ function fetchAccounts(): GetAccountDTO[] {
   return [
     {
       id: "1111-222-3333-4444-555",
-      company: "Toss",
+      institution: "Toss",
       type: AccountType.STOCK,
       name: "Savings Account",
       number: "123-456-789",
-      createdAt: new Date("2023-01-15"),
+      createdAt: new Date("2023-01-11"),
+      updatedAt: new Date("2021-01-15"),
     },
   ];
 }
@@ -38,6 +39,13 @@ const AccountPage: FC = () => {
     setIsRegisterMode(false);
   };
 
+  const handleAccountUpdater = (): void => {
+    console.log("Account Updater");
+  };
+  const handleAccountDeleter = (): void => {
+    console.log("Account deleter");
+  };
+
   useEffect(() => {
     const data = fetchAccounts();
     setAccounts(data);
@@ -49,6 +57,9 @@ const AccountPage: FC = () => {
       <Box flex="1" p={4} bg="white" borderRadius="md" boxShadow="sm" mr={4}>
         <HStack justifyContent="space-between" mb={6}>
           <Text fontSize="2xl">계좌 목록</Text>
+          <Button colorScheme="teal" onClick={() => setIsRegisterMode(true)}>
+            계좌 등록
+          </Button>
         </HStack>
         {loading ? (
           <Spinner size="lg" />
@@ -64,14 +75,15 @@ const AccountPage: FC = () => {
           <Text fontSize="2xl">
             {isRegisterMode ? "계좌 등록" : "계좌 상세"}
           </Text>
-          <Button colorScheme="teal" onClick={() => setIsRegisterMode(true)}>
-            계좌 등록
-          </Button>
         </HStack>
         {isRegisterMode ? (
           <AccountRegisterForm onRegister={handleAccountRegister} />
         ) : (
-          <AccountDetail account={selectedAccount} />
+          <AccountDetail
+            account={selectedAccount}
+            onUpdate={handleAccountUpdater}
+            onDelete={handleAccountDeleter}
+          />
         )}
       </Box>
     </Box>

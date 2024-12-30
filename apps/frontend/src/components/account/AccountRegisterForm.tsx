@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, FC, useState } from "react";
-import { Button, Input, Select, VStack } from "@chakra-ui/react";
+import { Button, Input, Select, Text, VStack } from "@chakra-ui/react";
 import { AccountType, CreateAccountDTO } from "@mid/shared";
 
 // 초기 상태 인터페이스
@@ -57,21 +57,25 @@ const AccountRegisterForm: FC<{
 
   return (
     <VStack align="stretch" spacing={4}>
+      <Text as={"b"}>기관명</Text>
       <Input
         placeholder="기관명을 입력하세요"
         value={newAccount.institution || ""}
         onChange={handleChange("institution")}
       />
+      <Text as={"b"}>계좌명</Text>
       <Input
         placeholder="계좌명을 입력하세요"
         value={newAccount.name || ""}
         onChange={handleChange("name")}
       />
+      <Text as={"b"}>계좌 번호</Text>
       <Input
         placeholder="계좌번호를 입력하세요"
         value={newAccount.number || ""}
         onChange={handleChange("number")}
       />
+      <Text as={"b"}>계좌 종류</Text>
       <Select
         placeholder="계좌 종류를 선택하세요"
         value={newAccount.type || ""}

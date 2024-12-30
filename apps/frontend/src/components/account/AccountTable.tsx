@@ -22,7 +22,7 @@ const AccountTable: FC<{
           onClick={() => onSelectAccount(account)}
           style={{ cursor: "pointer" }}
         >
-          <Td>{account.company}</Td>
+          <Td>{account.institution}</Td>
           <Td>{account.type}</Td>
           <Td>{account.name}</Td>
           <Td>{account.number}</Td>
