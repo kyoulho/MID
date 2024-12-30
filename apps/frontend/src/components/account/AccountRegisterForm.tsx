@@ -1,11 +1,15 @@
-"use client";
-
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { Button, Input, Select, Text, VStack } from "@chakra-ui/react";
-import { AccountType } from "@mid/shared";
+import { AccountType, CreateAccountDTO } from "@mid/shared";
 import { useAccountForm } from "@/hooks/UseAccountForm";
 
-const AccountRegisterForm: FC = () => {
+export interface AccountRegisterFormProps {
+  onCreateAccount: (newAccount: CreateAccountDTO) => Promise<void>;
+}
+
+const AccountRegisterForm: FC<AccountRegisterFormProps> = ({
+  onCreateAccount,
+}) => {
   const { formState, handleChange, handleSelectChange, isFormValid } =
     useAccountForm({
       institution: "",
@@ -14,7 +18,15 @@ const AccountRegisterForm: FC = () => {
       number: "",
     });
 
-  const createAccount = (): void => {};
+  const onSubmit = useCallback(async () => {
+    const newAccount: CreateAccountDTO = {
+      institution: formState.institution,
+      type: formState.type!,
+      name: formState.name,
+      number: formState.number,
+    };
+    await onCreateAccount(newAccount); // 비동기 호출
+  }, [formState, onCreateAccount]);
 
   return (
     <VStack align="stretch" spacing={4}>
@@ -50,7 +62,7 @@ const AccountRegisterForm: FC = () => {
       </Select>
       <Button
         colorScheme="teal"
-        onClick={createAccount}
+        onClick={void onSubmit}
         isDisabled={!isFormValid}
       >
         등록

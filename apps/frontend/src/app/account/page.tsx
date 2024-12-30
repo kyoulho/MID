@@ -2,28 +2,21 @@
 
 import React, { FC, useEffect, useState } from "react";
 import { Box, Button, HStack, Spinner, Text } from "@chakra-ui/react";
-import { AccountType, GetAccountDTO } from "@mid/shared";
+import { GetAccountDTO } from "@mid/shared";
 import AccountRegisterForm from "@/components/account/AccountRegisterForm";
 import AccountDetail from "@/components/account/AccountDetail";
 import AccountTable from "@/components/account/AccountTable";
-
-function fetchAccounts(): GetAccountDTO[] {
-  return [
-    {
-      id: "1111-222-3333-4444-555",
-      institution: "Toss",
-      type: AccountType.STOCK,
-      name: "Savings Account",
-      number: "123-456-789",
-      createdAt: new Date("2023-01-11"),
-      updatedAt: new Date("2021-01-15"),
-    },
-  ];
-}
+import { useAccounts } from "@/hooks/useAccount";
 
 const AccountPage: FC = () => {
-  const [accounts, setAccounts] = useState<GetAccountDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    accounts,
+    isLoading,
+    fetchAccounts,
+    createAccount,
+    deleteAccount,
+    updateAccount,
+  } = useAccounts();
   const [selectedAccount, setSelectedAccount] = useState<GetAccountDTO | null>(
     null,
   );
@@ -35,9 +28,7 @@ const AccountPage: FC = () => {
   };
 
   useEffect(() => {
-    const data = fetchAccounts();
-    setAccounts(data);
-    setLoading(false);
+    void fetchAccounts();
   }, []);
 
   return (
@@ -49,7 +40,7 @@ const AccountPage: FC = () => {
             계좌 등록
           </Button>
         </HStack>
-        {loading ? (
+        {isLoading ? (
           <Spinner size="lg" />
         ) : (
           <AccountTable
@@ -65,9 +56,13 @@ const AccountPage: FC = () => {
           </Text>
         </HStack>
         {isRegisterMode ? (
-          <AccountRegisterForm />
+          <AccountRegisterForm onCreateAccount={createAccount} />
         ) : (
-          <AccountDetail account={selectedAccount} />
+          <AccountDetail
+            account={selectedAccount}
+            onUpdateAccount={updateAccount}
+            onDeleteAccount={deleteAccount}
+          />
         )}
       </Box>
     </Box>

@@ -15,7 +15,7 @@ interface UseAccountFormReturn {
     field: keyof AccountFormState,
   ) => (e: ChangeEvent<HTMLInputElement>) => void;
   handleSelectChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  isFormValid: () => boolean;
+  isFormValid: boolean;
   changed: boolean;
 }
 
@@ -50,14 +50,11 @@ export const useAccountForm = (
   );
 
   // 유효성 검사
-  const isFormValid = useCallback((): boolean => {
-    return (
-      formState.institution.trim().length > 0 &&
-      formState.name.trim().length > 0 &&
-      formState.number.trim().length > 0 &&
-      formState.type !== null
-    );
-  }, [formState]);
+  const isFormValid =
+    formState.institution.trim().length > 0 &&
+    formState.name.trim().length > 0 &&
+    formState.number.trim().length > 0 &&
+    formState.type != null;
 
   // 변경 여부 계산
   const changed = useCallback((): boolean => {

@@ -1,14 +1,28 @@
-import { FC } from "react";
-import { AccountType, GetAccountDTO } from "@mid/shared";
+import { FC, useCallback } from "react";
+import {
+  AccountType,
+  GetAccountDTO,
+  UpdateAccountDTO,
+  UUID,
+} from "@mid/shared";
 import { Button, HStack, Input, Select, Text, VStack } from "@chakra-ui/react";
 import { useAccountForm } from "@/hooks/UseAccountForm";
 import { formatDatetime } from "@/utils/DateUtil";
 
 export interface AccountDetailProps {
   account: GetAccountDTO | null;
+  onUpdateAccount: (
+    id: UUID,
+    updatedAccount: UpdateAccountDTO,
+  ) => Promise<void>;
+  onDeleteAccount: (id: UUID) => Promise<void>;
 }
 
-const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
+const AccountDetail: FC<AccountDetailProps> = ({
+  account,
+  onUpdateAccount,
+  onDeleteAccount,
+}) => {
   if (!account) return <Text>계좌를 선택해 주세요.</Text>;
 
   const { formState, handleChange, handleSelectChange, isFormValid, changed } =
@@ -19,8 +33,21 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
       number: account.number,
     });
 
-  const updateAccount = (): void => {};
-  const deleteAccount = (): void => {};
+  // 계좌 수정 함수
+  const updateAccount = useCallback(async () => {
+    const updatedAccount: UpdateAccountDTO = {
+      institution: formState.institution,
+      type: formState.type!,
+      name: formState.name,
+      number: formState.number,
+    };
+    await onUpdateAccount(account.id, updatedAccount);
+  }, [formState, onUpdateAccount]);
+
+  // 계좌 삭제 함수
+  const deleteAccount = useCallback(async () => {
+    await onDeleteAccount(account.id);
+  }, [account, onDeleteAccount]);
 
   return (
     <VStack align="stretch" spacing={4}>
@@ -72,13 +99,13 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
       <HStack justifyContent={"flex-end"} spacing={4} width="100%">
         <Button
           colorScheme="teal"
-          onClick={updateAccount}
+          onClick={void updateAccount}
           isDisabled={!changed || !isFormValid}
           width="120px"
         >
           수정
         </Button>
-        <Button colorScheme="red" onClick={deleteAccount} width="120px">
+        <Button colorScheme="red" onClick={void deleteAccount} width="120px">
           삭제
         </Button>
       </HStack>
