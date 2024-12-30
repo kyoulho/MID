@@ -1,5 +1,6 @@
 export enum AccountType {
-  STOCK = "STOCK",
-  GOLD = "GOLD",
-  BITCOIN = "BITCOIN",
+  STOCK = "주식",
+  SAVING = "저축",
+  GOLD = "금현물",
+  COIN = "코인",
 }
