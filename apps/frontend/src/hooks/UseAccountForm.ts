@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { AccountType } from "@mid/shared";
 
 export interface AccountFormState {
@@ -8,47 +8,72 @@ export interface AccountFormState {
   number: string;
 }
 
-export const useAccountForm = (
-  initialState: AccountFormState,
-): {
+// 커스텀 훅의 반환 타입 정의
+interface UseAccountFormReturn {
   formState: AccountFormState;
   handleChange: (
     field: keyof AccountFormState,
   ) => (e: ChangeEvent<HTMLInputElement>) => void;
   handleSelectChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  isFormValid: boolean;
-} => {
+  isFormValid: () => boolean;
+  changed: boolean;
+}
+
+export const useAccountForm = (
+  initialState: AccountFormState,
+): UseAccountFormReturn => {
   const [formState, setFormState] = useState<AccountFormState>(initialState);
 
   // 입력 필드 변경 핸들러
-  const handleChange =
+  const handleChange = useCallback(
     (field: keyof AccountFormState) =>
-    (e: ChangeEvent<HTMLInputElement>): void => {
-      setFormState((prev) => ({
-        ...prev,
-        [field]: e.target.value,
-      }));
-    };
+      (e: ChangeEvent<HTMLInputElement>): void => {
+        const value = e.target.value;
+        setFormState((prev) => ({
+          ...prev,
+          [field]: value,
+        }));
+      },
+    [],
+  );
 
   // Select 필드 변경 핸들러
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-    setFormState((prev) => ({
-      ...prev,
-      type: e.target.value as AccountType,
-    }));
-  };
+  const handleSelectChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>): void => {
+      const value = e.target.value as AccountType;
+      setFormState((prev) => ({
+        ...prev,
+        type: value,
+      }));
+    },
+    [],
+  );
 
   // 유효성 검사
-  const isFormValid =
-    !!formState.institution.trim() &&
-    !!formState.name.trim() &&
-    !!formState.number.trim() &&
-    !!formState.type;
+  const isFormValid = useCallback((): boolean => {
+    return (
+      formState.institution.trim().length > 0 &&
+      formState.name.trim().length > 0 &&
+      formState.number.trim().length > 0 &&
+      formState.type !== null
+    );
+  }, [formState]);
+
+  // 변경 여부 계산
+  const changed = useCallback((): boolean => {
+    return (
+      formState.institution !== initialState.institution ||
+      formState.name !== initialState.name ||
+      formState.number !== initialState.number ||
+      formState.type !== initialState.type
+    );
+  }, [formState, initialState]);
 
   return {
     formState,
     handleChange,
     handleSelectChange,
     isFormValid,
+    changed: changed(),
   };
 };

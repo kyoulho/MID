@@ -34,18 +34,6 @@ const AccountPage: FC = () => {
     setIsRegisterMode(false);
   };
 
-  const handleAccountRegister = (): void => {
-    console.log("Account Register");
-    setIsRegisterMode(false);
-  };
-
-  const handleAccountUpdater = (): void => {
-    console.log("Account Updater");
-  };
-  const handleAccountDeleter = (): void => {
-    console.log("Account deleter");
-  };
-
   useEffect(() => {
     const data = fetchAccounts();
     setAccounts(data);
@@ -77,13 +65,9 @@ const AccountPage: FC = () => {
           </Text>
         </HStack>
         {isRegisterMode ? (
-          <AccountRegisterForm onRegister={handleAccountRegister} />
+          <AccountRegisterForm />
         ) : (
-          <AccountDetail
-            account={selectedAccount}
-            onUpdate={handleAccountUpdater}
-            onDelete={handleAccountDeleter}
-          />
+          <AccountDetail account={selectedAccount} />
         )}
       </Box>
     </Box>
