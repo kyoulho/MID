@@ -1,42 +1,62 @@
-import {Injectable, NotFoundException} from "@nestjs/common";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
-import {CreateAccountDTO, GetAccountDTO, UpdateAccountDTO, UUID} from "@shared/shared";
-import {Account} from "./entities/account.entity";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import {
+  CreateAccountDTO,
+  GetAccountDTO,
+  UpdateAccountDTO,
+  type UUID,
+} from "@mid/shared";
+import { Account } from "./entities/account.entity";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class AccountService {
-    constructor(
-        @InjectRepository(Account)
-        private readonly accountRepository: Repository<Account>,
-    ) {
+  constructor(
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
+  ) {}
+
+  async create(dto: CreateAccountDTO): Promise<GetAccountDTO> {
+    const newAccount = plainToInstance(Account, dto);
+    this.accountRepository.create(newAccount);
+    return plainToInstance(GetAccountDTO, newAccount);
+  }
+
+  async findAll(): Promise<GetAccountDTO[]> {
+    const accounts = await this.accountRepository.find();
+    return accounts.map((account) => plainToInstance(GetAccountDTO, account));
+  }
+
+  async findOne(id: UUID): Promise<GetAccountDTO> {
+    const account = await this.accountRepository.findOneBy({ id });
+    if (!account) {
+      throw new NotFoundException(`계좌 아이디 ${id} 찾을 수 없음.`);
+    }
+    return plainToInstance(GetAccountDTO, account);
+  }
+
+  async update(id: UUID, dto: UpdateAccountDTO): Promise<GetAccountDTO> {
+    const account = await this.accountRepository.findOneBy({ id });
+    if (!account) {
+      throw new NotFoundException(`계좌 아이디 ${id} 찾을 수 없음.`);
     }
 
-    async create(createAccountDTO: CreateAccountDTO): Promise<GetAccountDTO> {
-        const newAccount = this.accountRepository.create(createAccountDTO);
-        return await this.accountRepository.save(newAccount);
-    }
+    const updatedAccount = this.accountRepository.merge(
+      account,
+      plainToInstance(Account, dto),
+    );
+    const savedAccount = await this.accountRepository.save(updatedAccount);
 
-    async findAll(): Promise<GetAccountDTO[]> {
-        return await this.accountRepository.find();
-    }
+    return plainToInstance(GetAccountDTO, savedAccount);
+  }
 
-    async findOne(id: UUID): Promise<GetAccountDTO> {
-        const account = await this.accountRepository.findOneBy({id});
-        if (!account) {
-            throw new NotFoundException(`계좌 아이디 ${id} 찾을 수 없음.`);
-        }
-        return account;
+  async remove(id: UUID): Promise<{ message: string }> {
+    const account = await this.accountRepository.findOneBy({ id });
+    if (!account) {
+      throw new NotFoundException(`계좌 아이디 ${id} 찾을 수 없음.`);
     }
-
-    async update(id: UUID, updateAccountDTO: UpdateAccountDTO): Promise<Account> {
-        const account = await this.findOne(id);
-        Object.assign(account, updateAccountDTO);
-        return await this.accountRepository.save(account);
-    }
-
-    async remove(id: UUID): Promise<void> {
-        const account = await this.findOne(id);
-        await this.accountRepository.remove(account);
-    }
+    await this.accountRepository.remove(account);
+    return { message: `계좌 아이디 ${id}가 성공적으로 삭제되었습니다.` };
+  }
 }

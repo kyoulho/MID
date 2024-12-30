@@ -1,5 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-import { AccountType, UUID } from "@mid/shared";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { AccountType, type UUID } from "@mid/shared";
 
 @Entity("account")
 export class Account {
@@ -7,7 +13,7 @@ export class Account {
   id!: UUID;
 
   @Column({ length: 50 })
-  company!: string;
+  institution!: string;
 
   @Column({
     type: "enum",
@@ -16,5 +22,14 @@ export class Account {
   type!: AccountType;
 
   @Column({ length: 100, nullable: true })
-  alias?: string;
+  name: string;
+
+  @Column({ length: 100, nullable: true })
+  number!: number;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }

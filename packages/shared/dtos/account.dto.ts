@@ -25,4 +25,5 @@ export class UpdateAccountDTO implements BaseAccountDTO {
 export class GetAccountDTO extends CreateAccountDTO {
   id!: UUID;
   createdAt!: Date;
+  updatedAt!: Date;
 }
