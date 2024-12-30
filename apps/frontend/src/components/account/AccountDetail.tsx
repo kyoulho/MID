@@ -42,7 +42,7 @@ const AccountDetail: FC<AccountDetailProps> = ({
       number: formState.number,
     };
     await onUpdateAccount(account.id, updatedAccount);
-  }, [formState, onUpdateAccount]);
+  }, [account, formState, onUpdateAccount]);
 
   // 계좌 삭제 함수
   const deleteAccount = useCallback(async () => {
