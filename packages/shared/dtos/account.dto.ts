@@ -1,21 +1,21 @@
 import { AccountType } from "../enums";
 import { UUID } from "../types";
 
-export interface CreateAccountDTO {
+export class CreateAccountDTO {
   institution: string;
-  type: AccountType | null;
+  type: AccountType;
   name: string;
   number: string;
 }
 
-export interface UpdateAccountDTO {
+export class UpdateAccountDTO {
   institution: string;
-  type: AccountType | null;
+  type: AccountType;
   name: string;
   number: string;
 }
 
-export interface GetAccountDTO {
+export class GetAccountDTO {
   id: UUID;
   institution: string;
   type: AccountType;

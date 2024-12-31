@@ -8,8 +8,9 @@ export interface AccountFormState {
   number: string;
 }
 
-// 커스텀 훅의 반환 타입 정의
-interface UseAccountFormReturn {
+export const useAccountForm = (
+  initialState: AccountFormState,
+): {
   formState: AccountFormState;
   handleChange: (
     field: keyof AccountFormState,
@@ -17,11 +18,7 @@ interface UseAccountFormReturn {
   handleSelectChange: (e: ChangeEvent<HTMLSelectElement>) => void;
   isFormValid: boolean;
   changed: boolean;
-}
-
-export const useAccountForm = (
-  initialState: AccountFormState,
-): UseAccountFormReturn => {
+} => {
   const [formState, setFormState] = useState<AccountFormState>(initialState);
 
   // 입력 필드 변경 핸들러

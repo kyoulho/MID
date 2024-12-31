@@ -9,20 +9,14 @@ import { Button, HStack, Input, Select, Text, VStack } from "@chakra-ui/react";
 import { useAccountForm } from "@/hooks/useAccountForm";
 import { formatDatetime } from "@/utils/DateUtil";
 
-export interface AccountDetailProps {
+const AccountDetail: FC<{
   account: GetAccountDTO | null;
   onUpdateAccount: (
     id: UUID,
     updatedAccount: UpdateAccountDTO,
   ) => Promise<void>;
   onDeleteAccount: (id: UUID) => Promise<void>;
-}
-
-const AccountDetail: FC<AccountDetailProps> = ({
-  account,
-  onUpdateAccount,
-  onDeleteAccount,
-}) => {
+}> = ({ account, onUpdateAccount, onDeleteAccount }) => {
   if (!account) return <Text>계좌를 선택해 주세요.</Text>;
 
   const { formState, handleChange, handleSelectChange, isFormValid, changed } =

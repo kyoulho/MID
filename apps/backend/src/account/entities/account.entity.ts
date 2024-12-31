@@ -1,8 +1,8 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { AccountType, type UUID } from "@mid/shared";
@@ -10,26 +10,26 @@ import { AccountType, type UUID } from "@mid/shared";
 @Entity("account")
 export class Account {
   @PrimaryGeneratedColumn("uuid")
-  id!: UUID;
+  id?: UUID;
 
   @Column({ length: 50 })
-  institution!: string;
+  institution: string;
 
   @Column({
     type: "enum",
     enum: AccountType,
   })
-  type!: AccountType;
+  type: AccountType;
 
   @Column({ length: 100, nullable: true })
   name: string;
 
   @Column({ length: 100, nullable: true })
-  number!: number;
+  number: number;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt: Date;
 }

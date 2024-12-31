@@ -1,16 +1,16 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from "@nestjs/common";
 import { AccountService } from "./account.service";
 import type { CreateAccountDTO, UpdateAccountDTO, UUID } from "@mid/shared";
 
-@Controller("investment-account")
+@Controller("account")
 export class AccountController {
   constructor(private readonly investmentAccountService: AccountService) {}
 

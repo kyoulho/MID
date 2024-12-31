@@ -3,13 +3,9 @@ import { Button, Input, Select, Text, VStack } from "@chakra-ui/react";
 import { AccountType, CreateAccountDTO } from "@mid/shared";
 import { useAccountForm } from "@/hooks/useAccountForm";
 
-export interface AccountRegisterFormProps {
+const AccountRegisterForm: FC<{
   onCreateAccount: (newAccount: CreateAccountDTO) => Promise<void>;
-}
-
-const AccountRegisterForm: FC<AccountRegisterFormProps> = ({
-  onCreateAccount,
-}) => {
+}> = ({ onCreateAccount }) => {
   const { formState, handleChange, handleSelectChange, isFormValid } =
     useAccountForm({
       institution: "",
