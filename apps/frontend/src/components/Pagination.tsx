@@ -40,7 +40,8 @@ const Pagination: FC<PaginationProps> = ({
         <Button
           key={page}
           onClick={() => onPageChange(page)}
-          colorScheme={currentPage === page ? "teal" : "gray"}
+          variant={currentPage === page ? "solid" : "outline"}
+          colorScheme={"blue"}
           mx={1}
         >
           {page}

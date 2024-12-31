@@ -7,6 +7,7 @@ import {
   HStack,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -68,9 +69,9 @@ const AccountPage: FC = () => {
   return (
     <Box display="flex" p={6} height="100vh">
       <Box flex="1" p={4} bg="white" borderRadius="md" boxShadow="sm">
-        <HStack justifyContent="space-between" mb={6}>
+        <HStack justifyContent="space-between" mb={6} ml={6} mr={6}>
           <Text fontSize="2xl">계좌 목록</Text>
-          <Button colorScheme="teal" onClick={handleRegisterClick}>
+          <Button colorScheme="blue" onClick={handleRegisterClick}>
             계좌 등록
           </Button>
         </HStack>
@@ -97,6 +98,7 @@ const AccountPage: FC = () => {
           <ModalHeader>
             {isRegisterMode ? "계좌 등록" : "계좌 상세"}
           </ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
             {isRegisterMode ? (
               <AccountRegisterForm onCreateAccount={createAccount} />
@@ -110,9 +112,7 @@ const AccountPage: FC = () => {
               )
             )}
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>닫기</Button>
-          </ModalFooter>
+          <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
     </Box>
