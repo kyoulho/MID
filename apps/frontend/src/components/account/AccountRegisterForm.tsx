@@ -1,7 +1,7 @@
 import { FC, useCallback } from "react";
 import { Button, Input, Select, Text, VStack } from "@chakra-ui/react";
 import { AccountType, CreateAccountDTO } from "@mid/shared";
-import { useAccountForm } from "@/hooks/UseAccountForm";
+import { useAccountForm } from "@/hooks/useAccountForm";
 
 export interface AccountRegisterFormProps {
   onCreateAccount: (newAccount: CreateAccountDTO) => Promise<void>;

@@ -6,7 +6,7 @@ import {
   UUID,
 } from "@mid/shared";
 import { Button, HStack, Input, Select, Text, VStack } from "@chakra-ui/react";
-import { useAccountForm } from "@/hooks/UseAccountForm";
+import { useAccountForm } from "@/hooks/useAccountForm";
 import { formatDatetime } from "@/utils/DateUtil";
 
 export interface AccountDetailProps {

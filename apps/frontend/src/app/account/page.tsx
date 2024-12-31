@@ -1,12 +1,10 @@
 "use client";
 
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Flex,
   HStack,
-  IconButton,
   Modal,
   ModalBody,
   ModalContent,
@@ -18,11 +16,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { GetAccountDTO } from "@mid/shared";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import AccountRegisterForm from "@/components/account/AccountRegisterForm";
 import AccountDetail from "@/components/account/AccountDetail";
 import AccountTable from "@/components/account/AccountTable";
 import { useAccounts } from "@/hooks/useAccount";
+import { usePagination } from "@/hooks/usePagination";
+import Pagination from "@/components/Pagination";
 
 const AccountPage: FC = () => {
   const {
@@ -33,49 +32,38 @@ const AccountPage: FC = () => {
     deleteAccount,
     updateAccount,
   } = useAccounts();
-  const [selectedAccount, setSelectedAccount] = useState<GetAccountDTO | null>(
-    null,
-  );
-  const [isRegisterMode, setIsRegisterMode] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleRegisterClick = (): void => {
+  const [selectedAccount, setSelectedAccount] = useState<GetAccountDTO | null>(
+    null,
+  );
+
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
+
+  const { currentPage, totalPages, paginatedData, setPage } = usePagination(
+    accounts,
+    10,
+  );
+
+  const handleRegisterClick = useCallback(() => {
     setSelectedAccount(null);
     setIsRegisterMode(true);
     onOpen();
-  };
+  }, [setSelectedAccount, setIsRegisterMode, onOpen]);
 
-  const handleAccountClick = (account: GetAccountDTO): void => {
-    setSelectedAccount(account);
-    setIsRegisterMode(false);
-    onOpen();
-  };
+  const handleAccountClick = useCallback(
+    (account: GetAccountDTO) => {
+      setSelectedAccount(account);
+      setIsRegisterMode(false);
+      onOpen();
+    },
+    [setSelectedAccount, setIsRegisterMode, onOpen],
+  );
 
   useEffect(() => {
     void fetchAccounts();
   }, []);
-
-  const paginatedAccounts = accounts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
-  const totalPages = Math.max(1, Math.ceil(accounts.length / itemsPerPage));
-
-  const handlePreviousPage = (): void => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = (): void => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
 
   return (
     <Box display="flex" p={6} height="100vh">
@@ -91,30 +79,14 @@ const AccountPage: FC = () => {
         ) : (
           <>
             <AccountTable
-              accounts={paginatedAccounts}
+              accounts={paginatedData}
               onSelectAccount={handleAccountClick}
             />
-            <Flex justifyContent="center" mt={4} alignItems="center">
-              <IconButton
-                icon={<ChevronLeftIcon />}
-                aria-label="Previous Page"
-                onClick={handlePreviousPage}
-                isDisabled={currentPage === 1}
-                variant="outline"
-                mx={2}
-              />
-              <Text>
-                페이지 {currentPage} / {totalPages}
-              </Text>
-              <IconButton
-                icon={<ChevronRightIcon />}
-                aria-label="Next Page"
-                onClick={handleNextPage}
-                isDisabled={currentPage === totalPages}
-                variant="outline"
-                mx={2}
-              />
-            </Flex>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           </>
         )}
       </Box>
