@@ -1,10 +1,24 @@
 {
-  "extends": ["../../.eslintrc.json"],
+  "extends": [
+    "plugin:@nestjs/recommended", // NestJS 추천 규칙
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "../../.eslintrc.json" // 상위 설정을 확장
+  ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.json",
+    "sourceType": "module"
   },
+  "plugins": ["@typescript-eslint", "@nestjs"],
   "rules": {
-    "@typescript-eslint/no-namespace": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    "@typescript-eslint/no-namespace": "off", // 전역 네임스페이스 허용
+    "@typescript-eslint/explicit-module-boundary-types": "off", // 모듈 경계 타입 생략 허용
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // 미사용 변수 규칙 (이름이 _로 시작하면 허용)
+    "class-methods-use-this": "off", // 클래스 메서드에서 this를 사용하지 않아도 허용
+    "max-classes-per-file": "off", // 파일당 여러 클래스 허용
+    "no-console": ["warn", { "allow": ["warn", "error"] }], // console.warn, console.error는 허용
+    "@nestjs/no-extraneous-dependencies": "error", // NestJS 관련 의존성 문제 감지
+    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }] // 클래스 멤버 간 빈 줄 처리
   }
 }

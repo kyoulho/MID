@@ -1,11 +1,5 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
-import { AccountType, type UUID } from "@mid/shared";
+import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,} from "typeorm";
+import {AccountType, type UUID} from "@mid/shared";
 
 @Entity("account")
 export class Account {
@@ -25,7 +19,7 @@ export class Account {
   name: string;
 
   @Column({ length: 100, nullable: true })
-  number: number;
+  number: string;
 
   @CreateDateColumn()
   createdAt: Date;

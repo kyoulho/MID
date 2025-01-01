@@ -1,12 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "module": "CommonJS",
+    "lib": ["ESNext"],
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -15,30 +11,21 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "rootDir": "./src",
     "baseUrl": "./src",
+    "outDir": "./dist",
     "paths": {
-      "@shared/*": ["../../packages/shared/*"],
       "@/*": ["./*"]
     },
-    "jsx": "preserve",
     "allowJs": true,
     "incremental": true,
-    "noEmit": false,
+    "noEmit": false, // "false"로 설정해야 dist 생성 가능
     "isolatedModules": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "outDir": "./dist"
+    "experimentalDecorators": true
   },
-  "include": [
-    "next-env.d.ts",
-    "src/**/*.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

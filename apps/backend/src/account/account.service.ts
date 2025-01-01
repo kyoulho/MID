@@ -1,14 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Account } from "./entities/account.entity";
-import { plainToInstance } from "class-transformer";
-import {
-  CreateAccountDTO,
-  GetAccountDTO,
-  UpdateAccountDTO,
-  UUID,
-} from "@mid/shared";
+import {Injectable, NotFoundException} from "@nestjs/common";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
+import {Account} from "./entities/account.entity";
+import {CreateAccountDTO, GetAccountDTO, UpdateAccountDTO, UUID,} from "@mid/shared";
 
 @Injectable()
 export class AccountService {
@@ -18,14 +12,14 @@ export class AccountService {
   ) {}
 
   async create(dto: CreateAccountDTO): Promise<GetAccountDTO> {
-    const newAccount = plainToInstance(Account, dto);
+    const newAccount = this.accountRepository.create(dto);
     const savedAccount = await this.accountRepository.save(newAccount);
-    return plainToInstance(GetAccountDTO, savedAccount);
+    return { ...savedAccount } as GetAccountDTO; // 직접 변환
   }
 
   async findAll(): Promise<GetAccountDTO[]> {
     const accounts = await this.accountRepository.find();
-    return accounts.map((account) => plainToInstance(GetAccountDTO, account));
+    return accounts.map((account) => ({ ...account }) as GetAccountDTO);
   }
 
   async findOne(id: UUID): Promise<GetAccountDTO> {
@@ -33,13 +27,13 @@ export class AccountService {
     if (!account) {
       throw new NotFoundException(`계좌 아이디 ${id} 찾을 수 없음.`);
     }
-    return plainToInstance(GetAccountDTO, account);
+    return { ...account } as GetAccountDTO;
   }
 
   async update(id: UUID, dto: UpdateAccountDTO): Promise<GetAccountDTO> {
-    const updatedAccount = plainToInstance(Account, { id, ...dto });
+    const updatedAccount = { id, ...dto }; // DTO와 ID를 병합
     const savedAccount = await this.accountRepository.save(updatedAccount);
-    return plainToInstance(GetAccountDTO, savedAccount);
+    return { ...savedAccount } as GetAccountDTO;
   }
 
   async remove(id: UUID): Promise<void> {
