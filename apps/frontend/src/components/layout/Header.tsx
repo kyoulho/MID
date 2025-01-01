@@ -3,7 +3,7 @@
 import { Avatar, Flex, Spacer, Text } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { FC } from "react";
-import { Routes, routes } from "@/routes";
+import { Routes, routes } from "@/const/routes";
 
 const Header: FC = () => {
   const pathname = usePathname();

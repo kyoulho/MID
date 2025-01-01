@@ -1,26 +1,32 @@
 import { AccountType } from "../enums";
 import { UUID } from "../types";
+import { IsDate, IsEnum, IsString, IsUUID } from "class-validator";
 
-export class CreateAccountDTO {
+export class BaseAccountDTO {
+  @IsString()
   institution: string;
+
+  @IsEnum(AccountType)
   type: AccountType;
+
+  @IsString()
   name: string;
+
+  @IsString()
   number: string;
 }
 
-export class UpdateAccountDTO {
-  institution: string;
-  type: AccountType;
-  name: string;
-  number: string;
-}
+export class CreateAccountDTO extends BaseAccountDTO {}
 
-export class GetAccountDTO {
+export class UpdateAccountDTO extends BaseAccountDTO {}
+
+export class GetAccountDTO extends BaseAccountDTO {
+  @IsUUID()
   id: UUID;
-  institution: string;
-  type: AccountType;
-  name: string;
-  number: string;
+
+  @IsDate()
   createdAt: Date;
+
+  @IsDate()
   updatedAt: Date;
 }

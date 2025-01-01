@@ -1,6 +1,6 @@
-import { Box, VStack, Link, Text } from "@chakra-ui/react";
+import { Box, Link, Text, VStack } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { routes } from "@/routes";
+import { routes } from "@/const/routes";
 import { FC } from "react";
 
 const Sidebar: FC = () => {

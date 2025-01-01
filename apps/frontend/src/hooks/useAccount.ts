@@ -1,4 +1,3 @@
-// src/hooks/useAccounts.ts
 import { useCallback, useState } from "react";
 import {
   CreateAccountDTO,
@@ -25,36 +24,32 @@ export const useAccounts = (): UseAccountReturn => {
   const fetchAccounts = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response =
-        await apiClient.midApi.get<GetAccountDTO[]>("/api/accounts");
+      const response = await apiClient.get<GetAccountDTO[]>("/accounts");
       setAccounts(response.data);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // Create a new account
   const createAccount = useCallback(
     async (newAccount: CreateAccountDTO): Promise<void> => {
-      await apiClient.midApi.post("/api/accounts", newAccount);
+      await apiClient.post("/accounts", newAccount);
       await fetchAccounts();
     },
     [fetchAccounts],
   );
 
-  // Update an account
   const updateAccount = useCallback(
     async (id: UUID, updatedAccount: UpdateAccountDTO): Promise<void> => {
-      await apiClient.midApi.put(`/api/accounts/${id}`, updatedAccount);
+      await apiClient.patch(`/accounts/${id}`, updatedAccount);
       await fetchAccounts();
     },
     [fetchAccounts],
   );
 
-  // Delete an account
   const deleteAccount = useCallback(
     async (id: UUID): Promise<void> => {
-      await apiClient.midApi.delete(`/api/accounts/${id}`);
+      await apiClient.delete(`/accounts/${id}`);
       await fetchAccounts();
     },
     [fetchAccounts],

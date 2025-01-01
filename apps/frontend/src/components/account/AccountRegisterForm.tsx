@@ -14,14 +14,14 @@ const AccountRegisterForm: FC<{
       number: "",
     });
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(() => {
     const newAccount: CreateAccountDTO = {
       institution: formState.institution,
       type: formState.type!,
       name: formState.name,
       number: formState.number,
     };
-    await onCreateAccount(newAccount); // 비동기 호출
+    void onCreateAccount(newAccount);
   }, [formState, onCreateAccount]);
 
   return (
@@ -56,11 +56,7 @@ const AccountRegisterForm: FC<{
           </option>
         ))}
       </Select>
-      <Button
-        colorScheme="teal"
-        onClick={void onSubmit}
-        isDisabled={!isFormValid}
-      >
+      <Button colorScheme="teal" onClick={onSubmit} isDisabled={!isFormValid}>
         등록
       </Button>
     </VStack>

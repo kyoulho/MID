@@ -1,21 +1,14 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from "@nestjs/common";
-import { AccountService } from "./account.service";
-import type { CreateAccountDTO, UpdateAccountDTO, UUID } from "@mid/shared";
+import {Body, Controller, Delete, Get, Param, Patch, Post,} from "@nestjs/common";
+import {AccountService} from "./account.service";
+import type {CreateAccountDTO, UpdateAccountDTO, UUID} from "@mid/shared";
 
-@Controller("account")
+@Controller("/api/accounts")
 export class AccountController {
   constructor(private readonly investmentAccountService: AccountService) {}
 
   @Post()
   create(@Body() dto: CreateAccountDTO) {
+    console.log("Received DTO:", typeof dto);
     return this.investmentAccountService.create(dto);
   }
 
