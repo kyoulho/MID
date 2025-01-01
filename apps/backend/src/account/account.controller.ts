@@ -8,7 +8,7 @@ export class AccountController {
 
   @Post()
   create(@Body() dto: CreateAccountDTO) {
-    console.log("Received DTO:", typeof dto);
+    console.log("Received DTO:", dto);
     return this.investmentAccountService.create(dto);
   }
 

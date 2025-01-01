@@ -6,18 +6,22 @@ import { ErrorDTO } from "@mid/shared";
 const { toast } = createStandaloneToast();
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: "/api", // Next.js 리버스 프록시를 통해 처리
+  responseType: "json",
+  validateStatus(status) {
+    return [200].includes(status);
+  },
+  baseURL: "/api",
   timeout: 5000,
 });
 
-// 인터셉터 설정 함수
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+apiClient.interceptors.request // 인터셉터 설정 함수
+  .use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
 
 apiClient.interceptors.response.use(
   (response) => response,

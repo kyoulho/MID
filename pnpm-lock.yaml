@@ -14,6 +14,9 @@ importers:
       class-validator:
         specifier: ^0.14.1
         version: 0.14.1
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.18.0

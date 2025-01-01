@@ -16,7 +16,6 @@ const AccountTable: FC<{
   onSelectAccount: (account: GetAccountDTO) => void;
 }> = ({ accounts, onSelectAccount }) => {
   const itemsPerPage = 10;
-
   return (
     <TableContainer>
       <Table variant={"simple"} size={"lg"}>

@@ -20,7 +20,6 @@ export const useAccounts = (): UseAccountReturn => {
   const [accounts, setAccounts] = useState<GetAccountDTO[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Fetch all accounts
   const fetchAccounts = useCallback(async () => {
     setIsLoading(true);
     try {
