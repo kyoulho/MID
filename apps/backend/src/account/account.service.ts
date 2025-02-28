@@ -14,7 +14,7 @@ export class AccountService {
   async create(dto: CreateAccountDTO): Promise<GetAccountDTO> {
     const newAccount = this.accountRepository.create(dto);
     const savedAccount = await this.accountRepository.save(newAccount);
-    return { ...savedAccount } as GetAccountDTO; // 직접 변환
+    return { ...savedAccount } as GetAccountDTO;
   }
 
   async findAll(): Promise<GetAccountDTO[]> {

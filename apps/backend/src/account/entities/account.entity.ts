@@ -7,23 +7,23 @@ export class Account {
   id?: UUID;
 
   @Column({ length: 50 })
-  institution: string;
+  institution!: string;
 
   @Column({
     type: "enum",
     enum: AccountType,
   })
-  type: AccountType;
+  type!: AccountType;
 
   @Column({ length: 100, nullable: true })
-  name: string;
+  name!: string;
 
   @Column({ length: 100, nullable: true })
-  number: string;
+  number!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt?: Date;
 }

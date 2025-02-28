@@ -12,10 +12,20 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+
+    "strict": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictReturnTypes": true,
+
+    "strictBindCallApply": true, // .bind(), .call(), .apply() 사용 시 타입 검사를 엄격하게
+    "forceConsistentCasingInFileNames": true, // 파일명 대소문자 구분 강제
+    "noFallthroughCasesInSwitch": true, // switch 문에서 fallthrough 방지
+    "noUncheckedIndexedAccess": true, // 배열/객체의 인덱스 접근 시 undefined 가능성 체크
+    "noImplicitOverride": true, // 오버라이드 시 @Override처럼 반드시 명시 필요
+    "noPropertyAccessFromIndexSignature": true, // 인덱스 시그니처 속성 접근 시 명확한 타입 필요
+    "exactOptionalPropertyTypes": true // 선택적 프로퍼티(undefined 여부) 타입 엄격 관리
   }
 }

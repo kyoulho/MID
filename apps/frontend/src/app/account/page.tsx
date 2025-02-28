@@ -20,7 +20,7 @@ import { GetAccountDTO } from "@mid/shared";
 import AccountRegisterForm from "@/components/account/AccountRegisterForm";
 import AccountDetail from "@/components/account/AccountDetail";
 import AccountTable from "@/components/account/AccountTable";
-import { useAccounts } from "@/hooks/useAccount";
+import { useAccounts } from "@/store/useAccountStore";
 import { usePagination } from "@/hooks/usePagination";
 import Pagination from "@/components/Pagination";
 

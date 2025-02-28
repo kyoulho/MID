@@ -93,13 +93,13 @@ const AccountDetail: FC<{
       <HStack justifyContent={"flex-end"} spacing={4} width="100%">
         <Button
           colorScheme="teal"
-          onClick={void updateAccount}
+          onClick={updateAccount}
           isDisabled={!changed || !isFormValid}
           width="120px"
         >
           수정
         </Button>
-        <Button colorScheme="red" onClick={void deleteAccount} width="120px">
+        <Button colorScheme="red" onClick={deleteAccount} width="120px">
           삭제
         </Button>
       </HStack>
