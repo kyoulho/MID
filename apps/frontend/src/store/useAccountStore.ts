@@ -8,16 +8,18 @@ import {
 } from "@mid/shared";
 
 interface AccountState {
+  account: GetAccountDTO | null;
   accounts: GetAccountDTO[];
   isLoading: boolean;
   fetchAccounts: () => Promise<void>;
+  selectAccount: (account: GetAccountDTO | null) => void;
   createAccount: (newAccount: CreateAccountDTO) => Promise<void>;
   updateAccount: (id: UUID, updatedAccount: UpdateAccountDTO) => Promise<void>;
   deleteAccount: (id: UUID) => Promise<void>;
 }
 
 export const useAccountStore = create<AccountState>((set, get) => ({
-  accountsForm: {},
+  account: null,
   accounts: [],
   isLoading: false,
 
@@ -29,6 +31,10 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     } finally {
       set({ isLoading: false });
     }
+  },
+
+  selectAccount: (account: GetAccountDTO | null): void => {
+    set({ account });
   },
 
   createAccount: async (newAccount: CreateAccountDTO): Promise<void> => {
